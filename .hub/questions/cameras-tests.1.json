@@ -2,7 +2,7 @@
   "affects": [
     "cameras"
   ],
-  "answer": null,
+  "answer": "dismissed: same as cameras.4",
   "choice": "tags.direction wins over tags[\"camera:direction\"] when both exist; the first value of a ';' list is used; cardinal letters use the 16-point compass in 22.5-degree steps (N=0, NE=45, SW=225); '0' gives 0, not null; text like 'forward' gives null",
   "critical": false,
   "id": "cameras-tests.1",
@@ -11,7 +11,7 @@
     "Only accept the 8 main compass points"
   ],
   "round": 0,
-  "status": "decided",
+  "status": "dismissed",
   "task": "cameras-tests",
   "text": "How should parseOverpass read camera direction when the JSDoc leaves details open?",
   "why": "The JSDoc names direction first and gives '90;270' -> 90 and 'NE' -> 45; the rest follows the usual OSM compass convention"

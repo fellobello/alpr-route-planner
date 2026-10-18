@@ -1,0 +1,17 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "MIT, set in package.json only; there is no LICENSE file yet",
+  "critical": false,
+  "id": "hub.19",
+  "options": [
+    "Add an MIT LICENSE file",
+    "GPL-3.0 or AGPL-3.0 so copies must stay open source",
+    "No license (all rights reserved) until you decide"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Which license should the code use?",
+  "why": "Nobody asked this. The scaffold set it, and it matters before the repo goes public on GitHub"
+}

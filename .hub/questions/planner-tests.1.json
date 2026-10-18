@@ -2,7 +2,7 @@
   "affects": [
     "planner"
   ],
-  "answer": null,
+  "answer": "dismissed: same as planner.1",
   "choice": "The acceptance tests accept either: the literal \"camera(s)\" or the correct plural (\"1 camera\" / \"2 cameras\"). The rest of each note must match exactly.",
   "critical": false,
   "id": "planner-tests.1",
@@ -11,7 +11,7 @@
     "Require real pluralization"
   ],
   "round": 0,
-  "status": "decided",
+  "status": "dismissed",
   "task": "planner-tests",
   "text": "The planner notes say \"<n> camera(s)\". Should the text read \"camera(s)\" literally or use the real plural (\"1 camera\", \"2 cameras\")?",
   "why": "The planner JSDoc writes \"camera(s)\" as a placeholder, and the RoutePlan example in types.js uses real pluralization, so the spec does not pin the wording down"

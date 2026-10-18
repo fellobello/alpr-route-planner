@@ -2,7 +2,7 @@
   "affects": [
     "api"
   ],
-  "answer": null,
+  "answer": "dismissed: same as api.2",
   "choice": "400 with code \"INPUT\", as if the parse failure were an InputError",
   "critical": false,
   "id": "api-tests.1",
@@ -10,7 +10,7 @@
     "400 with a separate code such as BAD_JSON"
   ],
   "round": 0,
-  "status": "decided",
+  "status": "dismissed",
   "task": "api-tests",
   "text": "What error code should POST /api/route return for a body that is not JSON (truncated, empty, or form-encoded)? The spec gives status 400 but no code.",
   "why": "The spec says the body code is err.code, and bad JSON is bad caller input like any InputError; the web app can treat both alike."

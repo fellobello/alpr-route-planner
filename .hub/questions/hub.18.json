@@ -1,0 +1,19 @@
+{
+  "affects": [
+    "routing",
+    "web"
+  ],
+  "answer": null,
+  "choice": "Yes for now: live routing needs it, the app itself stores nothing, and npm run offline sends nothing; the page does not yet say where trip points go",
+  "critical": false,
+  "id": "hub.18",
+  "options": [
+    "Add a line in the page saying which servers see your start and end",
+    "Self-host Valhalla with Docker so trips never leave your computer"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "With live data, your trip's start and end points are sent to the public FOSSGIS Valhalla server, and the trip area to the public Overpass server. Is that acceptable for a tool meant to avoid tracking?",
+  "why": "Nobody asked this. hub.5 picked the public router for cost, not privacy, and someone avoiding plate readers may not want their trips on a third-party server's logs"
+}

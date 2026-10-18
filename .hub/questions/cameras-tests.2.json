@@ -2,7 +2,7 @@
   "affects": [
     "cameras"
   ],
-  "answer": null,
+  "answer": "dismissed: same as cameras.1",
   "choice": "Every Overpass query bbox must sit on the 0.1-degree grid and cached tiles must not be fetched again, but adjacent missing tiles may be merged into one query; the fake Overpass reads the first four comma-separated numbers in the query as south,west,north,east",
   "critical": false,
   "id": "cameras-tests.2",
@@ -10,7 +10,7 @@
     "Require exactly one request per missing tile"
   ],
   "round": 0,
-  "status": "decided",
+  "status": "dismissed",
   "task": "cameras-tests",
   "text": "How strict should the acceptance tests be about how OverpassCameraSource splits and queries tiles?",
   "why": "The JSDoc promises grid-aligned tiles and no refetch of fresh tiles, not one request per tile; this keeps the tests from locking in one query style"

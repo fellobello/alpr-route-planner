@@ -1,0 +1,19 @@
+{
+  "affects": [
+    "planner",
+    "web"
+  ],
+  "answer": null,
+  "choice": "No limit: the route with the fewest cameras wins however much longer it is (ties go to the faster one); the results panel shows both times so you can compare",
+  "critical": false,
+  "id": "hub.17",
+  "options": [
+    "Skip avoiding routes more than 50% slower than the fastest",
+    "Add a max-detour slider next to the buffer slider"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "How much longer may the avoiding route be than the fastest one?",
+  "why": "Nobody asked this. The planner follows hub.7 literally, so dodging one camera can pick a route that takes twice as long"
+}
