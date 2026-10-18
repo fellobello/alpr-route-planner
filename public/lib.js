@@ -17,7 +17,9 @@
  * @returns {string}
  */
 export function bboxParam(bounds) {
-  throw new Error('not implemented: web.bboxParam');
+  return [bounds.south, bounds.west, bounds.north, bounds.east]
+    .map((x) => String(Number(x.toFixed(5))))
+    .join(',');
 }
 
 /**
@@ -26,7 +28,8 @@ export function bboxParam(bounds) {
  * @returns {string}
  */
 export function formatDistance(meters) {
-  throw new Error('not implemented: web.formatDistance');
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  return `${(meters / 1000).toFixed(1)} km`;
 }
 
 /**
@@ -36,7 +39,10 @@ export function formatDistance(meters) {
  * @returns {string}
  */
 export function formatDuration(seconds) {
-  throw new Error('not implemented: web.formatDuration');
+  if (seconds < 30) return '<1 min';
+  const m = Math.round(seconds / 60);
+  if (m < 60) return `${m} min`;
+  return `${Math.floor(m / 60)} h ${m % 60} min`;
 }
 
 /**
@@ -47,7 +53,9 @@ export function formatDuration(seconds) {
  * @returns {ClickState}
  */
 export function nextClickState(state, point) {
-  throw new Error('not implemented: web.nextClickState');
+  if (!state.start) return { start: point, end: state.end ?? null };
+  if (!state.end) return { start: state.start, end: point };
+  return { start: point, end: null };
 }
 
 /**
@@ -58,7 +66,11 @@ export function nextClickState(state, point) {
  * @returns {{start: LatLng, end: LatLng, bufferM: number}}
  */
 export function buildRouteRequest(start, end, bufferM) {
-  throw new Error('not implemented: web.buildRouteRequest');
+  return {
+    start: { lat: start.lat, lon: start.lon },
+    end: { lat: end.lat, lon: end.lon },
+    bufferM,
+  };
 }
 
 /**
@@ -76,5 +88,52 @@ export function buildRouteRequest(start, end, bufferM) {
  * }}
  */
 export function summarizePlan(plan) {
-  throw new Error('not implemented: web.summarizePlan');
+  const fastest = routeSummary(plan.fastest);
+  const avoiding = routeSummary(plan.avoiding);
+  const d = plan.avoiding.route.durationS - plan.fastest.route.durationS;
+  return {
+    fastest,
+    avoiding: { ...avoiding, extraText: d < 30 ? 'no extra time' : '+' + formatDuration(d) },
+    same: samePoints(plan.fastest.route.points, plan.avoiding.route.points),
+    notes: Array.isArray(plan.notes) ? plan.notes.slice() : [],
+  };
+}
+
+/**
+ * @param {number} n
+ * @returns {string}
+ */
+function cameraText(n) {
+  if (n === 0) return 'No cameras';
+  if (n === 1) return '1 camera';
+  return `${n} cameras`;
+}
+
+/**
+ * @param {{route: {distanceM: number, durationS: number}, cameraIds: string[]}} result
+ */
+function routeSummary(result) {
+  const cameraCount = result.cameraIds.length;
+  return {
+    distanceText: formatDistance(result.route.distanceM),
+    durationText: formatDuration(result.route.durationS),
+    cameraCount,
+    cameraText: cameraText(cameraCount),
+  };
+}
+
+/**
+ * @param {number[][]} a
+ * @param {number[][]} b
+ * @returns {boolean}
+ */
+function samePoints(a, b) {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].length !== b[i].length) return false;
+    for (let j = 0; j < a[i].length; j++) {
+      if (a[i][j] !== b[i][j]) return false;
+    }
+  }
+  return true;
 }
