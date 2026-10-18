@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "web-tests"
+  ],
+  "answer": null,
+  "choice": "Set the start and keep the existing end (the literal 'no start -> set start'); a missing end becomes null",
+  "critical": false,
+  "id": "web.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "nextClickState when there is no start but an end is already set (the JSDoc does not say)",
+  "why": "Only the start is mentioned for that case; the state cannot happen through clicks anyway"
+}

@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "geo"
+  ],
+  "answer": null,
+  "choice": "A point before the start must give >= 0 and about 0; a point 500 m past the end must give lineLengthM within 1% (so extrapolation, 10% over, fails, but approximation noise passes)",
+  "critical": false,
+  "id": "geo-tests.3",
+  "options": [
+    "Strict 0 <= v <= lineLengthM(line)"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "geo-tests",
+  "text": "How do the tests check positionAlongM's documented range (between 0 and lineLengthM)?",
+  "why": "A strict <= lineLengthM check would fail an implementation whose along-distance uses a slightly different segment length than haversine, which the 1% accuracy target allows"
+}

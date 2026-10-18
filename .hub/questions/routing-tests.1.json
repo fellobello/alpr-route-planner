@@ -1,0 +1,18 @@
+{
+  "affects": [
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Left means left of the direction of travel from start to end (north for an eastbound trip). Candidates are tried in the order 500 m left, 500 m right, 1000 m left, 1000 m right, 2000 m left, 2000 m right, 4000 m left, 4000 m right. The waypoint is measured in meters on the perpendicular through the start-end midpoint, with a tolerance of 2% of the offset plus 5 m. distanceM must be within 1% of the haversine length of the points.",
+  "critical": false,
+  "id": "routing-tests.1",
+  "options": [
+    "All left offsets first (500, 1000, 2000, 4000), then all right offsets",
+    "Left means the positive perpendicular in raw lat/lon degrees"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "routing-tests",
+  "text": "How do the routing acceptance tests read the StubRouter dog-leg rule ('left side then right side, nearest first')?",
+  "why": "Left of travel is the only meaning of 'left' that does not depend on the map projection, and 'nearest first' implies interleaving the two sides at each offset"
+}

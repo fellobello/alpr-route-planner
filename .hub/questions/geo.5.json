@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Start due north and go counterclockwise, longitudes normalised to [-180, 180]",
+  "critical": false,
+  "id": "geo.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "circleRing vertex order",
+  "why": "RFC 7946 exterior-ring order, which Valhalla and GeoJSON tools accept"
+}

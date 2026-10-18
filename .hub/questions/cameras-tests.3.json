@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "cameras"
+  ],
+  "answer": null,
+  "choice": "Test the {note, cameras} shape, a note saying made-up/not real, 20-40 cameras, unique 'sample:<n>' ids, source 'sample', the central-Atlanta box, and 'about a third' Flock as 20%-50%; skip 'mostly on major roads' (no offline way to check) and skip what loadSampleCameras does for a missing file (not documented)",
+  "critical": false,
+  "id": "cameras-tests.3",
+  "options": [
+    "Require exactly one third Flock"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras-tests",
+  "text": "Which parts of the sample-file schema can be tested, and how loosely?",
+  "why": "Only checks that follow straight from the fixture.js schema comment, with room for an approximate share"
+}

@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Ask /api/cameras for the central 0.49 degrees of the view and say so in the status line ('N cameras near the center of the view (zoom in to see the edges)')",
+  "critical": false,
+  "id": "web.1",
+  "options": [
+    "Split the view into several requests",
+    "Show no cameras until zoomed in further"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "What should the map do when the view is wider than the 0.5-degree camera query limit (common at zoom 12 on a wide screen)?",
+  "why": "One small request per pan keeps Overpass load low and never hits the server's 400; the status line says what is missing"
+}

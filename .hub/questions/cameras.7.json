@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "src/cameras/common.js (bbox validation, string cleanup, filter-to-bbox with dedupe by id that returns copies); internal to the module, not an interface",
+  "critical": false,
+  "id": "cameras.7",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "Where do helpers shared by both camera sources live?",
+  "why": "Both sources need the same bbox checks and filtering, and returning copies keeps callers from changing cached data"
+}

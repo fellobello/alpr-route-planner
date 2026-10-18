@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/geo-tests-1",
   "depends_on": [],
   "description": "Write acceptance tests for the geo module in test/acceptance/geo.test.js from .hub/spec.md and the interface JSDoc only (do not read or rely on implementation details). Cover documented behavior, exact strings, error classes and codes, and edge cases. No network: inject fake fetch, sources and routers. Tests may fail until the module is built.",
   "id": "geo-tests",
@@ -10,8 +10,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "38 acceptance tests in test/acceptance/geo.test.js (commit 3685971 on build/geo-tests-1), one per documented promise of src/geo.js: haversine, lineLengthM, pointToPolylineM, positionAlongM clamping, camerasNearRoute (filter, inclusive buffer, order, id tie-break, no mutation), bboxAround/Contains/Union, circleRing, polyline encode/decode (Google example at p5 and p6, round trips). Distances checked to the spec's 1% target, exact results exactly. Checked against an independent scratch reference (passes, including circumscribed-ring and planar-along variants) and 12 deliberately broken variants (each caught). Against the current stub all fail with NotImplementedError except EARTH_RADIUS_M, as expected. Decisions geo-tests.1-3.",
   "title": "Acceptance tests for geometry helpers",
   "worktree": null
 }

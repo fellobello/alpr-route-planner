@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api"
+  ],
+  "answer": null,
+  "choice": "html, css and js files must be served with text/html, text/css and text/javascript (or application/javascript) Content-Types; a NUL byte in the path must get an error status without crashing the server; a zero-area bbox (south == north) is valid",
+  "critical": false,
+  "id": "api-tests.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api-tests",
+  "text": "Which static-file and bbox behaviors not spelled out in the spec do the acceptance tests require?",
+  "why": "Browsers refuse ES module scripts with other MIME types, so app.js would not load; the server must never crash on a handler error; parseBbox only rejects south > north and west > east."
+}

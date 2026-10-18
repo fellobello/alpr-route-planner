@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api-tests",
+    "web"
+  ],
+  "answer": null,
+  "choice": "Exactly four plain decimal numbers (no hex, NaN or Infinity, spaces allowed), latitudes -90..90, longitudes -180..180, south <= north, west <= east, each span <= 0.5 degrees with 1e-9 degree slack for float rounding; boxes crossing the antimeridian are rejected",
+  "critical": false,
+  "id": "api.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "How exact is the bbox check in parseBbox?",
+  "why": "a client's exact 0.5-degree box can come out as 0.5000000000000036 after subtraction; the antimeridian is far outside the Atlanta use case"
+}

@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "planner",
+    "web"
+  ],
+  "answer": null,
+  "choice": "30 made-up cameras (ids sample:1-30), 10 Flock (manufacturer 'Flock Safety'), the rest with manufacturer null or 'Sample ALPR Vendor (made up)', operators like 'Sample City Police (made up)', placed near major central Atlanta roads; the note says they are not real",
+  "critical": false,
+  "id": "cameras.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "What goes in data/sample-cameras.json?",
+  "why": "Enough for the offline demo to route around, and every field that could be mistaken for real data says it is made up"
+}

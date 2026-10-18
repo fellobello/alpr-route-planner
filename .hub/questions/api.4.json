@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api-tests",
+    "web"
+  ],
+  "answer": null,
+  "choice": "GET and HEAD only; / and any dir/ serve index.html; dotfiles, .. segments, encoded traversal, NUL bytes and symlinks that resolve outside publicDir are 404 JSON; unknown extensions are application/octet-stream; static files send Cache-Control: no-cache and API responses no-store",
+  "critical": false,
+  "id": "api.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "How strict is static file serving from public/?",
+  "why": "no path traversal was required; no-cache means edits to public/ show up on reload during local development"
+}

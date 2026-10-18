@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "planner",
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Per segment, project into a local equirectangular plane centred on the point to find the nearest point (earliest segment wins ties), then measure to it with haversine",
+  "critical": false,
+  "id": "geo.1",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "How to measure point-to-line distance",
+  "why": "Meets the 1% target under 100 km, is cheap, and the returned distance is a real great-circle distance to a point on the line"
+}

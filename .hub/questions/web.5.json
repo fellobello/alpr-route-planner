@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Canvas renderer for camera markers; start/end drawn as non-interactive DOM markers so camera markers stay clickable; a click that only closes a popup does not move start/end; after planning, zooming below 12 keeps only the cameras next to the routes; changing the slider after a plan shows 'plan again' instead of replanning; if /api/config fails the map still opens with the built-in defaults and an error message",
+  "critical": false,
+  "id": "web.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "Map behavior details",
+  "why": "Each one came out of trying the page in a browser against a fake API"
+}

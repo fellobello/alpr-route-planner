@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "web"
+  ],
+  "answer": null,
+  "choice": "'1 h 0 min': the '<h> h <rest> min' format is kept even when rest is 0",
+  "critical": false,
+  "id": "web-tests.2",
+  "options": [
+    "'1 h' with the minutes left off"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "web-tests",
+  "text": "How should formatDuration show whole hours (3600 s)?",
+  "why": "The JSDoc gives one format for 60+ minutes with no special case for 0 minutes"
+}

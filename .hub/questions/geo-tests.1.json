@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "geo"
+  ],
+  "answer": null,
+  "choice": "Distances (haversine, point-to-line, position along, bbox margins, circle radius) must be within 1%, the spec's accuracy target; results the JSDoc states exactly (bbox edges with no margin, the 90/180 clamps, ring length and closure, polyline strings, buffer inclusivity via bufferM 0) are checked exactly",
+  "critical": false,
+  "id": "geo-tests.1",
+  "options": [
+    "Tight 1e-6 tolerances everywhere"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "geo-tests",
+  "text": "How strict are the geo acceptance tests about numbers?",
+  "why": "The spec promises 1% under 100 km, so tighter checks would fail correct code that uses an equirectangular approximation"
+}

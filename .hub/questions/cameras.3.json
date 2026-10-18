@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "UpstreamError('overpass', ...) for network errors, a 40 s client timeout ('request timed out'), non-2xx ('HTTP 503', 429 says 'rate limited'), bad JSON, no elements array, and HTTP 200 answers whose remark says 'runtime error'; none of these are cached",
+  "critical": false,
+  "id": "cameras.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "How are Overpass failures reported?",
+  "why": "Overpass reports query timeouts as HTTP 200 with a remark and partial data, which must not be cached as a complete tile for 6 hours"
+}

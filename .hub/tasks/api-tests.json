@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/api-tests-1",
   "depends_on": [],
   "description": "Write acceptance tests for the api module in test/acceptance/api.test.js from .hub/spec.md and the interface JSDoc only (do not read or rely on implementation details). Cover documented behavior, exact strings, error classes and codes, and edge cases. No network: inject fake fetch, sources and routers. Tests may fail until the module is built.",
   "id": "api-tests",
@@ -10,8 +10,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "51 acceptance tests in test/acceptance/api.test.js, written from the spec and the interface JSDoc only. They cover parseBbox (format, order, range, span limit), errorStatus, /api/health, /api/config, /api/cameras, POST /api/route (status and code for every error class, bad JSON, the 10 kB limit with Content-Length and chunked), 500 handling that keeps the server alive, 404/405 JSON, static files (index, nested files, default and file-URL publicDir, MIME types, missing files, 11 path-traversal variants, NUL byte), configFromEnv (defaults, PORT/HOST, CAMERA_SOURCE, ROUTER, OFFLINE, CONTACT User-Agent), and main (exit 1 on an unknown source or router, exact start line). Against the current stubs: 47 fail, 4 skip (they need the planner or cameras module). Against a throwaway reference server written from the spec, all 51 pass, and broken variants (path.resolve traversal, startsWith without a separator, a Content-Length-only 413, InputError checked before TripTooLongError) fail as they should. Decisions logged as api-tests.1-4.",
   "title": "Acceptance tests for the HTTP API",
   "worktree": null
 }

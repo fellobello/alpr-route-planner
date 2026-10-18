@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Skip themselves while planner.validatePlanRequest or cameras.loadSampleCameras still throws NotImplementedError (default planRoutes, CAMERA_SOURCE=fixture, OFFLINE=1, and the npm-run-offline start line)",
+  "critical": false,
+  "id": "api-tests.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api-tests",
+  "text": "How should the api acceptance tests that need another module behave before that module is built?",
+  "why": "Otherwise a missing planner or cameras module would show up as an api failure and get the api task reopened by mistake."
+}

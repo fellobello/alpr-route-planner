@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "planner",
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Line, bbox-building, circle and polyline functions throw InputError on bad input; haversineM, bboxContains and bboxUnion do no checks",
+  "critical": false,
+  "id": "geo.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "Input validation in geo",
+  "why": "Clear errors where callers pass user or upstream data, no overhead on the small hot-path helpers"
+}

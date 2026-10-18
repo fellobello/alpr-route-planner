@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Arithmetic (not 32-bit bitwise) encoding, precision 0-10 accepted, absolute values rounded before taking deltas, malformed strings throw InputError",
+  "critical": false,
+  "id": "geo.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "Polyline codec details",
+  "why": "No overflow at high precision, no accumulated rounding error, and bad Valhalla output fails clearly"
+}

@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "planner"
+  ],
+  "answer": null,
+  "choice": "Plain string compare in code-unit order, so sample:10 sorts before sample:2",
+  "critical": false,
+  "id": "geo.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "camerasNearRoute tie-break order by id",
+  "why": "Matches the default JS sort, deterministic, no locale dependence"
+}

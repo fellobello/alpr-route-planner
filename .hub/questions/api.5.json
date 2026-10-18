@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api-tests"
+  ],
+  "answer": null,
+  "choice": "CAMERA_SOURCE and ROUTER are trimmed and case-insensitive, empty means the default; OFFLINE is on for any non-empty value except 0/false/no/off and overrides both; PORT must be an integer 0-65535; CONTACT is read from the env passed to configFromEnv and must be plain ASCII; a bad value or a busy port prints \"Error: ...\" to stderr and exits with code 1; main() resolves to the listening server",
+  "critical": false,
+  "id": "api.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "How does main.js read and report its environment?",
+  "why": "matches the documented env vars, with clear messages instead of stack traces; returning the server makes main testable"
+}

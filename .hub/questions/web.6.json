@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Show one 'Fastest route' block plus a line: 'It passes no mapped cameras, so there is nothing to avoid.' or 'No other route passes fewer mapped cameras, so both lines are the same.'; both lines are still drawn on top of each other",
+  "critical": false,
+  "id": "web.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "Results panel when the fastest route is already the best one (summarizePlan same=true)",
+  "why": "Two identical blocks would look like a bug"
+}

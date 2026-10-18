@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api",
+    "planner"
+  ],
+  "answer": null,
+  "choice": "Rejects with InputError (code INPUT) before any request, for a malformed bbox or one more than 3 degrees wide or tall",
+  "critical": false,
+  "id": "cameras.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "What does OverpassCameraSource.getCameras do with an invalid or huge bbox?",
+  "why": "Keeps a bug in a caller from sending a runaway query to Overpass; real calls are at most about 0.6 degrees (API cap 0.5, planner corridor for a 50 km trip)"
+}

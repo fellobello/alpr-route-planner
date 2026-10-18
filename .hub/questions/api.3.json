@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api-tests"
+  ],
+  "answer": null,
+  "choice": "code is always INTERNAL, even if the thrown error has its own code such as ENOENT; error is the thrown message (\"Internal server error\" for non-Error throws); the stack is logged to stderr and the server keeps running",
+  "critical": false,
+  "id": "api.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "What do unexpected (500) errors put in the response?",
+  "why": "keeps system error codes out of the API's code list; the message helps debugging on a local-only app"
+}

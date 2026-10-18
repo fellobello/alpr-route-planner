@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "routing"
+  ],
+  "answer": null,
+  "choice": "buildValhallaRequest must return exactly the documented body, with no extra keys: locations [{lat, lon}] x2, costing auto, units kilometers, directions_type none, plus exclude_locations [{lat, lon, radius: Math.round(avoidRadiusM)}] only when avoid is non-empty. A response missing trip, trip.legs or trip.summary is malformed and gives UpstreamError. A 400 with any error_code other than 442/171 (for example 154, distance limit), or a 400 that is not JSON, gives UpstreamError('valhalla'), not NoRouteError, InputError or TripTooLongError.",
+  "critical": false,
+  "id": "routing-tests.2",
+  "options": [
+    "Allow extra keys in the request body (for example costing_options)"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "routing-tests",
+  "text": "How strict are the routing acceptance tests about the Valhalla request and error mapping?",
+  "why": "The JSDoc spells out the body and lists 442/171 as the only NoRouteError cases; anything else is 'any other non-2xx'"
+}

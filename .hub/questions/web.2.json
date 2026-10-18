@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Flock cameras red circles, other ALPRs orange circles, cameras next to a planned route larger with a dark outline; fastest route gray dashed on top, avoiding route wider solid blue underneath; start green dot, end purple dot (CSS dots, no images)",
+  "critical": false,
+  "id": "web.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "Placeholder colors and marker styles",
+  "why": "Two clearly different placeholder colors and overlap stays readable where both routes share a road"
+}

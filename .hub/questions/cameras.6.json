@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "InputError for an unreadable file, bad JSON, no cameras array, a missing id, or a lat/lon that is not a number in range; missing optional fields are filled in (isFlock from the manufacturer when absent, nulls, source 'sample'); the default file is read on the first getCameras call and kept",
+  "critical": false,
+  "id": "cameras.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "How strict is loadSampleCameras, and when does FixtureCameraSource read the file?",
+  "why": "Callers always get full Camera objects, and constructing the source stays side-effect free as the interface constructor was written"
+}

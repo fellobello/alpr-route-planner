@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "web"
+  ],
+  "answer": null,
+  "choice": "Always one decimal: '1.0 km', '2.0 km' (literal reading of 'km with one decimal')",
+  "critical": false,
+  "id": "web-tests.1",
+  "options": [
+    "Drop a trailing .0: '1 km', '2 km'"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "web-tests",
+  "text": "How should formatDistance show exactly 1000 m and whole km (e.g. 2000 m)?",
+  "why": "The JSDoc says km with one decimal; an acceptance test pins this so the results panel is consistent"
+}

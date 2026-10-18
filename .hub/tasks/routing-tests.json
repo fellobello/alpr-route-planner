@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/routing-tests-1",
   "depends_on": [],
   "description": "Write acceptance tests for the routing module in test/acceptance/routing.test.js from .hub/spec.md and the interface JSDoc only (do not read or rely on implementation details). Cover documented behavior, exact strings, error classes and codes, and edge cases. No network: inject fake fetch, sources and routers. Tests may fail until the module is built.",
   "id": "routing-tests",
@@ -10,8 +10,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "Added test/acceptance/routing.test.js: 37 acceptance tests covering VALHALLA_ENDPOINT/MAX_AVOID, buildValhallaRequest exact body and rounding, parseValhallaResponse decoding and leg joining, ValhallaRouter POST/User-Agent/endpoint and error mapping (442/171 NoRouteError, other non-2xx, network or bad JSON UpstreamError, >50 avoid InputError), and StubRouter straight line, dog-leg order (left then right of travel, nearest first), fewest-hits fallback, distance/duration and determinism. No network and no geo dependency. They fail with NotImplementedError until routing is built; all pass against a spec-only reference implementation kept outside the repo. Interpretations logged as routing-tests.1 and routing-tests.2.",
   "title": "Acceptance tests for Valhalla and stub routers",
   "worktree": null
 }

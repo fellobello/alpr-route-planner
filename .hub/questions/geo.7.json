@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Prefilter cameras by the route bbox grown by the buffer (1% + 1 m slack), skipped for antimeridian-crossing lines or an infinite buffer",
+  "critical": false,
+  "id": "geo.7",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "camerasNearRoute bbox prefilter",
+  "why": "Fast for many cameras and never changes the result"
+}

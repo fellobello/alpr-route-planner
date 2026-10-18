@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "planner"
+  ],
+  "answer": null,
+  "choice": "Skip such cameras silently; a negative buffer returns []; NaN buffer throws InputError",
+  "critical": false,
+  "id": "geo.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "geo",
+  "text": "camerasNearRoute: cameras with missing or non-finite lat/lon, and a negative buffer",
+  "why": "A camera with no position cannot be next to the route, and one bad OSM row should not fail a whole plan"
+}

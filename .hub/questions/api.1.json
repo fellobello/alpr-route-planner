@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api-tests"
+  ],
+  "answer": null,
+  "choice": "10,000 bytes, exported as MAX_BODY_BYTES from src/server/app.js; over the limit (by Content-Length or while streaming) is 413 {error, code: \"BODY_TOO_LARGE\"} with Connection: close",
+  "critical": false,
+  "id": "api.1",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "How big is the 10 kB POST /api/route body limit, and what does an oversized body return?",
+  "why": "SI kB matches the spec wording; checking both the header and the streamed size stops chunked bodies too"
+}

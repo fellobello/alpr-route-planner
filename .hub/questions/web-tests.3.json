@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "web"
+  ],
+  "answer": null,
+  "choice": "Value equality of every [lat, lon] pair in order, on separate arrays parsed from JSON; any differing coordinate or length gives false",
+  "critical": false,
+  "id": "web-tests.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web-tests",
+  "text": "What counts as 'identical points' for summarizePlan.same?",
+  "why": "The plan arrives as JSON from POST /api/route, so the two point arrays are never the same object"
+}

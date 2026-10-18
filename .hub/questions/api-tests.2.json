@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api"
+  ],
+  "answer": null,
+  "choice": "Check only the status and the {error, code} shape for 404/405/413, and test the limit with a 9.5 kB body (accepted) and a 20 kB body (rejected), both with Content-Length and chunked",
+  "critical": false,
+  "id": "api-tests.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api-tests",
+  "text": "How strictly should the acceptance tests pin the 404 / 405 / 413 error codes and the exact 10 kB byte limit?",
+  "why": "The spec doesn't name those codes or say whether 10 kB means 10,000 or 10,240 bytes, so the builder picks; the chunked case makes sure the limit isn't enforced only from the Content-Length header."
+}

@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/cameras-1",
   "depends_on": [],
   "description": "Fill in src/cameras/overpass.js (buildOverpassQuery, parseOverpass, OverpassCameraSource with 0.1-degree tile cache, TTL, injected fetch and clock, User-Agent, UpstreamError on failures) and src/cameras/fixture.js (loadSampleCameras, FixtureCameraSource). Write data/sample-cameras.json: 20-40 clearly made-up cameras in central Atlanta per the schema in fixture.js. Do not import other modules' code beyond src/types.js. No network in tests: fake fetch. Unit tests in test/unit/cameras.test.js; npm test must pass.",
   "id": "cameras",
@@ -10,8 +10,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "Built OverpassCameraSource (0.1-degree tile cache with 6 h TTL, one Overpass request per batch of missing tiles, UpstreamError on failures), parseOverpass, buildOverpassQuery, FixtureCameraSource and loadSampleCameras, plus data/sample-cameras.json with 30 made-up Atlanta cameras (10 Flock). 57 unit tests pass under npm test, and the sibling acceptance suite (58 tests) also passes against this code.",
   "title": "Implement Overpass and sample camera sources",
   "worktree": null
 }

@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Split on ';', take the first part that is a 16-point compass name (N, NE, NNW...) or contains a number (first number, so '45-135' gives 45), normalize to 0-360 (so '-90' gives 270); fall back to camera:direction; else null",
+  "critical": false,
+  "id": "cameras.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "How is the OSM direction tag parsed into Camera.direction?",
+  "why": "Matches the interface doc and the forms these tags take in OSM; direction is only shown, never used for routing (hub.16)"
+}

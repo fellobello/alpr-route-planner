@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api-tests",
+    "web"
+  ],
+  "answer": null,
+  "choice": "404 NOT_FOUND (unknown /api path, missing or blocked static file), 405 METHOD_NOT_ALLOWED with an Allow header, 413 BODY_TOO_LARGE; malformed JSON body is 400 INPUT",
+  "critical": false,
+  "id": "api.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "api",
+  "text": "Which code values do HTTP-level errors that have no shared error class use?",
+  "why": "types.js only defines codes for INPUT, TRIP_TOO_LONG, NO_ROUTE, UPSTREAM; these keep every error in the same {error, code} shape"
+}

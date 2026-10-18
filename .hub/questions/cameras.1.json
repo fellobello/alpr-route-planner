@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "One Overpass request for the bounding rectangle of all missing tiles, split back into tiles for the cache; a tile already in flight is awaited instead of requested again",
+  "critical": false,
+  "id": "cameras.1",
+  "options": [
+    "One request per tile",
+    "One request per call, no tile cache"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "cameras",
+  "text": "How should OverpassCameraSource fetch the 0.1-degree tiles a bbox is missing?",
+  "why": "A 50 km trip covers about 30 tiles; one request per tile would hit Overpass's per-IP rate limit and break its fair-use policy"
+}

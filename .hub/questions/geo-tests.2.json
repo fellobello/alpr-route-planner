@@ -1,0 +1,19 @@
+{
+  "affects": [
+    "geo",
+    "routing"
+  ],
+  "answer": null,
+  "choice": "Both: each vertex must be between 0.99 x radiusM and 1.01 x radiusM / cos(pi / sides) from the center",
+  "critical": false,
+  "id": "geo-tests.2",
+  "options": [
+    "Require vertices exactly at radiusM (inscribed only)",
+    "Require the polygon to fully cover the circle (circumscribed only)"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "geo-tests",
+  "text": "circleRing JSDoc does not say whether the polygon sits inside the circle or around it. What do the tests accept?",
+  "why": "Vertices on the circle (inscribed) and a polygon drawn around the circle so it fully covers the avoid area (circumscribed) are both fair readings of 'approximating a circle'"
+}

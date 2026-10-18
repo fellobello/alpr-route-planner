@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "planner"
+  ],
+  "answer": null,
+  "choice": "Not checked: (1) whether \"The avoiding route still passes <n>\" counts cameras next to the start or end; (2) whether a router call that fails with NoRouteError counts in iterations; (3) whether \"Too many cameras...\" also appears when the 4-call limit, not router.maxAvoid, ends the search; (4) what happens when an avoid call fails with an error other than NoRouteError. Each test fixes everything else.",
+  "critical": false,
+  "id": "planner-tests.2",
+  "options": [
+    "Pick one reading for each and test it"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "planner-tests",
+  "text": "Which planner details does the spec leave open, so the acceptance tests do not check them?",
+  "why": "The planRoutes JSDoc does not settle these, and a builder could reasonably go either way"
+}

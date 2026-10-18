@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Put more pure helpers (bbox clipping, marker styles, popup rows, status texts, error text) in public/view.js; test it in test/unit/web-view.test.js, and smoke-test app.js against a fake Leaflet, fake DOM and fake fetch in test/unit/web-app.test.js",
+  "critical": false,
+  "id": "web.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "web",
+  "text": "Extra code beyond the lib.js interface",
+  "why": "Keeps lib.js exactly as specified while still unit-testing the DOM glue without a browser"
+}
