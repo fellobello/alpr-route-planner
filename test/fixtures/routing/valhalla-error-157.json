@@ -1,0 +1,6 @@
+{
+  "error_code": 157,
+  "error": "Exceeded max avoid locations:50",
+  "status_code": 400,
+  "status": "Bad Request"
+}
