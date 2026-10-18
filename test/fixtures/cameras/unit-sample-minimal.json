@@ -1,0 +1,6 @@
+{ "note": "minimal cameras: optional fields left out",
+  "cameras": [
+    { "id": "sample:1", "lat": 33.75, "lon": -84.38 },
+    { "id": "sample:2", "lat": 33.76, "lon": -84.39, "manufacturer": "  Flock Safety  ", "direction": 45 },
+    { "id": "sample:3", "lat": 33.77, "lon": -84.40, "isFlock": false, "manufacturer": "Flock Safety", "operator": "", "direction": "east" }
+  ] }
