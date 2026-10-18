@@ -1,0 +1,7 @@
+{
+  "note": "Test fixture: two made-up cameras.",
+  "cameras": [
+    { "id": "sample:1", "lat": 33.7537, "lon": -84.3901, "isFlock": true, "manufacturer": "Flock Safety", "operator": "Test PD", "direction": 90, "source": "sample" },
+    { "id": "sample:2", "lat": 33.7712, "lon": -84.3655, "isFlock": false, "manufacturer": null, "operator": null, "direction": null, "source": "sample" }
+  ]
+}

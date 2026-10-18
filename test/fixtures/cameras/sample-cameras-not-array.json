@@ -1,0 +1,4 @@
+{
+  "note": "Test fixture: cameras is an object, not an array.",
+  "cameras": { "sample:1": { "id": "sample:1", "lat": 33.75, "lon": -84.39 } }
+}
