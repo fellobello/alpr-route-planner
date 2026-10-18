@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api",
+    "planner"
+  ],
+  "answer": null,
+  "choice": "test/fixtures/routing/: valhalla-route-2legs.json (a realistic two-leg Valhalla /route response) with its decoded points, plus Valhalla error bodies for 442, 171 and 157.",
+  "critical": false,
+  "id": "routing.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "Where do the routing test fixtures live?",
+  "why": "Spec says shared JSON fixtures go in test/fixtures/<module>/; planner and API tests can reuse a real-looking response."
+}

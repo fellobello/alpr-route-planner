@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api"
+  ],
+  "answer": null,
+  "choice": "The error propagates unchanged, so POST /api/route answers 502 even though the fastest route was found",
+  "critical": false,
+  "id": "planner.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "What happens when an avoid call fails with an error other than NoRouteError (for example Valhalla HTTP 503)?",
+  "why": "Same rule as the fastest call and getCameras; there is no documented note for a cut-short search, and a silent partial result could pass for a real answer"
+}

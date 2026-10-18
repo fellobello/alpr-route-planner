@@ -1,0 +1,19 @@
+{
+  "affects": [
+    "planner",
+    "web"
+  ],
+  "answer": null,
+  "choice": "Send radius = round(avoidRadiusM) exactly as documented and let Valhalla clamp it; the planner re-checks every returned route with the full buffer, so the counts shown stay honest (a 250 m buffer just avoids less well).",
+  "critical": true,
+  "id": "routing.1",
+  "options": [
+    "Lower MAX_BUFFER_M to 200 so the slider matches what Valhalla can block (changes hub.13 and src/types.js)",
+    "Keep 300 m but add a UI note that buffers over 200 m are only partly enforced by the router"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "Valhalla docs/source check: the server silently clamps any location radius, including exclude_locations radius, to its max_radius (default config 200 m). The app allows buffers up to 300 m (hub.13), so for 201-300 m buffers Valhalla only blocks roads within 200 m of a camera while the planner still counts cameras within the full buffer. What should happen above 200 m?",
+  "why": "Keeps the interface as written and the result safe; only the 200-300 m slider range is weaker than it looks."
+}

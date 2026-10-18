@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "InputError for a non-object request, start/end/avoid points that are not finite {lat, lon} in range, a non-array avoid, too many avoid points, and a negative or non-finite avoidRadiusM when avoid is non-empty; a missing avoid counts as empty; only lat/lon are copied from points.",
+  "critical": false,
+  "id": "routing.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "How strict is input checking in buildValhallaRequest and StubRouter.route?",
+  "why": "Catches caller bugs before any network call while accepting the planner's Camera objects as avoid points."
+}

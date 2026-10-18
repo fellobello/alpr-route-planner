@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/planner-1",
   "depends_on": [
     "geo"
   ],
@@ -12,8 +12,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "validatePlanRequest and planRoutes are implemented in src/planner.js following the JSDoc algorithm (iterative blocking, area growth with refetch, fixed note strings with real plurals), with 24 unit tests in test/unit/planner.test.js; all 32 planner acceptance tests pass. npm test fails only the 31 routing tests, because routing is not built on this branch yet.",
   "title": "Implement route planning in src/planner.js",
   "worktree": null
 }

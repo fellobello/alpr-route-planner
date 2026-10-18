@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "If every avoidable camera on a reroute is already blocked (the router ignored the avoid list) the search stops with no note; \"leaves area\" means any route point is outside the bbox; cameras are merged by id across fetches (duplicates dropped) and every candidate is re-counted against the final list; avoid points are sent as plain {lat, lon} copies",
+  "critical": false,
+  "id": "planner.6",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "Small planRoutes details the JSDoc does not settle",
+  "why": "Avoids pointless repeat calls, keeps cameraIds consistent with RoutePlan.cameras, and keeps Camera fields out of router requests"
+}

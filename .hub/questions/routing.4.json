@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "api"
+  ],
+  "answer": null,
+  "choice": "NoRouteError: 'No route found: <Valhalla error text> (Valhalla error <code>)'. UpstreamError: 'valhalla: HTTP <status>: <Valhalla error text> (error <code>)', or a short reason for network failure, bad JSON or a malformed trip.",
+  "critical": false,
+  "id": "routing.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "What do routing error messages say?",
+  "why": "The API shows err.message to the user, so it should say what Valhalla said without leaking stack traces."
+}

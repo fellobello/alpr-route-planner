@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Yes, when the limit is reached and the latest route still passes a camera that could still be blocked",
+  "critical": false,
+  "id": "planner.4",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "Should \"Too many cameras to block them all; showing the best route found.\" also appear when the 4-call limit, not router.maxAvoid, ends the search?",
+  "why": "Either way the search stopped before blocking everything, and the note tells the user the result is a best effort"
+}

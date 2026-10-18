@@ -1,7 +1,7 @@
 {
-  "attempts": 0,
+  "attempts": 1,
   "blocked_by": [],
-  "branch": null,
+  "branch": "build/routing-1",
   "depends_on": [
     "geo"
   ],
@@ -12,8 +12,8 @@
   "notes": [],
   "previous_branches": [],
   "round": 0,
-  "status": "todo",
-  "summary": null,
+  "status": "done",
+  "summary": "ValhallaRouter (exclude_locations, precision-6 decoding, User-Agent, 442/171 to NoRouteError, everything else to UpstreamError) and the deterministic StubRouter are implemented, with 34 unit tests plus fixtures; all routing unit and acceptance tests pass. The only npm test failures are the 32 planner acceptance tests waiting on the planner task. Valhalla silently clamps exclude radius to 200 m, logged as critical routing.1.",
   "title": "Implement Valhalla and stub routers",
   "worktree": null
 }

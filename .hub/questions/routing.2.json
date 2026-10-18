@@ -1,0 +1,17 @@
+{
+  "affects": [
+    "planner"
+  ],
+  "answer": null,
+  "choice": "No change: use exclude_locations as specified and rely on the planner re-checking camera hits on every returned route, which catches both the over-blocking and the silent drop.",
+  "critical": false,
+  "id": "routing.2",
+  "options": [
+    "Switch to exclude_polygons built with geo.circleRing (precise circles, but Valhalla caps total perimeter at 10 km: about 21 cameras at 75 m, 5 at 300 m)"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "Other Valhalla exclude_locations surprises: (1) each point is snapped to whole road edges (intersection to intersection) within the radius, not a circular area, so one camera can block a long block of road and its cross streets; (2) if Valhalla fails to correlate the exclude list, it logs a warning and routes with NO avoids instead of returning an error; (3) the docs still call the field avoid_locations in prose (exclude_locations is the current name); (4) too many points gives error 157, mapped to UpstreamError. Change anything?",
+  "why": "The planner's iterative re-check already treats Valhalla as best effort; switching mechanisms would change the interface."
+}

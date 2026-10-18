@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Yes to both: iterations counts every avoid call made, and the note is added whenever NoRouteError stops the search",
+  "critical": false,
+  "id": "planner.3",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "Does an avoid call that fails with NoRouteError count in RoutePlan.iterations, and does \"No other route was found.\" appear if an earlier reroute was already found?",
+  "why": "iterations is documented as router calls made; the JSDoc says to add the note on NoRouteError without exceptions"
+}

@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Start equal to end: travel is taken as due east, so left is north. Longitude deltas wrap so trips across the antimeridian stay short. Waypoints use a flat local frame around the arithmetic lat/lon midpoint.",
+  "critical": false,
+  "id": "routing.5",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "routing",
+  "text": "How does StubRouter handle edge cases its JSDoc does not cover?",
+  "why": "Deterministic, never throws for a valid request, and matches the frame the acceptance tests use."
+}

@@ -1,0 +1,16 @@
+{
+  "affects": [
+    "api",
+    "web"
+  ],
+  "answer": null,
+  "choice": "No coercion: numeric strings, booleans and null are InputError for lat, lon and bufferM; only a missing bufferM gets the 75 m default; messages name the field, and TripTooLongError gives the distance and the 50 km limit",
+  "critical": false,
+  "id": "planner.7",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "How strict is validatePlanRequest about types?",
+  "why": "The JSDoc calls a non-finite bufferM an error, and the web client always sends numbers"
+}

@@ -1,0 +1,13 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Both count the avoiding route: the first its cameras within bufferM of start or end, the second only its other (avoidable) cameras, so no camera is counted twice; a note whose count is 0 is left out",
+  "critical": false,
+  "id": "planner.2",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "Which cameras do the \"can't be avoided\" and \"still passes\" notes count?",
+  "why": "Matches what the map draws and avoids telling the user about the same camera twice"
+}

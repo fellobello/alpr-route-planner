@@ -1,0 +1,15 @@
+{
+  "affects": [
+    "web"
+  ],
+  "answer": null,
+  "choice": "Real plural: \"1 camera\", \"2 cameras\"",
+  "critical": false,
+  "id": "planner.1",
+  "options": [],
+  "round": 0,
+  "status": "decided",
+  "task": "planner",
+  "text": "Planner notes say \"<n> camera(s)\". Literal \"(s)\" or the real plural?",
+  "why": "Reads naturally and matches the RoutePlan example in types.js; the acceptance tests accept either (planner-tests.1)"
+}
