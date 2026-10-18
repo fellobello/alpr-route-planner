@@ -1,0 +1,17 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [],
+  "description": "Fill in src/cameras/overpass.js (buildOverpassQuery, parseOverpass, OverpassCameraSource with 0.1-degree tile cache, TTL, injected fetch and clock, User-Agent, UpstreamError on failures) and src/cameras/fixture.js (loadSampleCameras, FixtureCameraSource). Write data/sample-cameras.json: 20-40 clearly made-up cameras in central Atlanta per the schema in fixture.js. Do not import other modules' code beyond src/types.js. No network in tests: fake fetch. Unit tests in test/unit/cameras.test.js; npm test must pass.",
+  "id": "cameras",
+  "kind": "build",
+  "module": "cameras",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Implement Overpass and sample camera sources",
+  "worktree": null
+}

@@ -1,0 +1,17 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [],
+  "description": "Fill in every function in src/geo.js exactly as its JSDoc says (haversine, line length, point-to-line distance, position along line, camerasNearRoute ordering, bbox helpers, circleRing in [lon, lat], polyline6 encode/decode). Pure functions, no dependencies, accurate to 1% under 100 km. Do not change signatures or src/types.js. Add unit tests in test/unit/geo.test.js; npm test must pass.",
+  "id": "geo",
+  "kind": "build",
+  "module": "geo",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Implement geometry helpers in src/geo.js",
+  "worktree": null
+}

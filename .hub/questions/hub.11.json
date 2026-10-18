@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Click the map: first click sets start, second sets end, third starts over; address search comes later",
+  "critical": false,
+  "id": "hub.11",
+  "options": [
+    "Add address search with Nominatim now",
+    "Type coordinates into two boxes"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "How are start and end picked in the sample?",
+  "why": "Address search needs a geocoder (Nominatim) with its own usage rules; clicks show the idea without it"
+}

@@ -1,0 +1,17 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [],
+  "description": "Write acceptance tests for the api module in test/acceptance/api.test.js from .hub/spec.md and the interface JSDoc only (do not read or rely on implementation details). Cover documented behavior, exact strings, error classes and codes, and edge cases. No network: inject fake fetch, sources and routers. Tests may fail until the module is built.",
+  "id": "api-tests",
+  "kind": "test",
+  "module": "api",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Acceptance tests for the HTTP API",
+  "worktree": null
+}

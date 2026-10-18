@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Every camera tagged surveillance:type=ALPR, with Flock Safety ones marked as Flock and routed around the same way",
+  "critical": true,
+  "id": "hub.4",
+  "options": [
+    "Only cameras tagged manufacturer=Flock Safety",
+    "Let the user toggle between all ALPRs and Flock only"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Show only Flock-brand cameras, or every license plate reader?",
+  "why": "Many mapped ALPRs have no manufacturer tag, and other brands share the same networks, so filtering to Flock would miss real cameras"
+}

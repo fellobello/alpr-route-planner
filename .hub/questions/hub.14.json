@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Atlanta, Georgia at zoom 13, where the offline sample cameras are also placed",
+  "critical": false,
+  "id": "hub.14",
+  "options": [
+    "Ask the browser for your location",
+    "Zoomed-out view of the whole US"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Where should the map open?",
+  "why": "A dense ALPR area makes the demo show something right away; the user can pan anywhere"
+}

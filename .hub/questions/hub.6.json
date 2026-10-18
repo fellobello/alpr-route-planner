@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Standard OpenStreetMap tiles (tile.openstreetmap.org) with the required attribution",
+  "critical": true,
+  "id": "hub.6",
+  "options": [
+    "A free-tier provider like MapTiler or Stadia Maps (needs a key)",
+    "Self-hosted Protomaps vector tiles"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Which map tiles should the map show?",
+  "why": "Free and keyless; the tile policy allows a small interactive app that only loads tiles in view"
+}

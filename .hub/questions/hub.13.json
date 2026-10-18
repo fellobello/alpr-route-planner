@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "75 meters, adjustable from 15 to 300 meters with a slider",
+  "critical": false,
+  "id": "hub.13",
+  "options": [
+    "30 meters (same road only)",
+    "150 meters (wide berth)"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "How close to a camera counts as passing it, by default?",
+  "why": "Close enough to catch a camera on the same road without flagging every parallel street; DeFlock's planner offers a similar range"
+}

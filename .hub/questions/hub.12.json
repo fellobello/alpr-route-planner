@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Driving only",
+  "critical": false,
+  "id": "hub.12",
+  "options": [
+    "Driving plus cycling",
+    "Driving, cycling and walking"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Which travel modes?",
+  "why": "License plate readers watch cars; bikes and walkers are not tracked by plate"
+}

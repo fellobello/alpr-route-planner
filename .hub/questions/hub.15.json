@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Up to 50 km straight-line between start and end",
+  "critical": false,
+  "id": "hub.15",
+  "options": [
+    "Up to 150 km",
+    "No limit"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "How long can a trip be in the sample?",
+  "why": "Longer trips mean very large camera lookups and many router calls against free public servers"
+}

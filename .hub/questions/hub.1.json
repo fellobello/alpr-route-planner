@@ -1,0 +1,17 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "A web app that runs in the browser, served by a small local server (npm start, then open localhost:8080)",
+  "critical": true,
+  "id": "hub.1",
+  "options": [
+    "Phone app (React Native / Expo) for use while driving",
+    "Static website with no server, hosted free on GitHub Pages",
+    "Browser extension that adds cameras on top of Google Maps"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "What kind of app should this be?",
+  "why": "A browser map is the closest thing to Google Maps that needs no app store, accounts or installs to try"
+}

@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Locally on your computer only (npm start); public hosting comes later",
+  "critical": true,
+  "id": "hub.9",
+  "options": [
+    "Deploy to a free host such as Render or Fly.io",
+    "Static site on GitHub Pages calling Overpass and Valhalla from the browser"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Where does the app run for now?",
+  "why": "Running locally needs no hosting account and avoids sending public traffic to the free Overpass and Valhalla servers"
+}

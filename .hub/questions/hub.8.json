@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "No database and no accounts; camera lookups are cached in memory for 6 hours, and an offline mode uses a bundled sample file of made-up cameras",
+  "critical": true,
+  "id": "hub.8",
+  "options": [
+    "SQLite cache of cameras and saved routes",
+    "User accounts with saved places and routes"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Is there any storage or user account?",
+  "why": "The sample has nothing to save per user, and an in-memory cache keeps Overpass traffic within its fair-use policy"
+}

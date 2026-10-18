@@ -1,0 +1,16 @@
+{
+  "name": "flock-camera-map",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ALPR Route Planner: see license plate reader cameras on a map and plan driving routes around them.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server/main.js",
+    "offline": "OFFLINE=1 node src/server/main.js",
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "license": "MIT"
+}

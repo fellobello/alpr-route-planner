@@ -1,0 +1,17 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "The free public Valhalla server run by FOSSGIS (valhalla1.openstreetmap.de), using its exclude_locations option to block roads at cameras",
+  "critical": true,
+  "id": "hub.5",
+  "options": [
+    "OpenRouteService (free API key, avoid_polygons)",
+    "GraphHopper (free API key, custom model areas)",
+    "Self-host Valhalla or OSRM with Docker"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Which routing engine plans the routes?",
+  "why": "It needs no account or key and can exclude roads, which OSRM cannot; a stub router keeps everything working offline"
+}

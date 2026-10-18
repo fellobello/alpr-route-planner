@@ -1,0 +1,17 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "OpenStreetMap, queried live through the free Overpass API (the same crowd-sourced data DeFlock maps), cached in memory",
+  "critical": true,
+  "id": "hub.3",
+  "options": [
+    "DeFlock's own data or API (terms of use unclear, would need permission)",
+    "A downloaded OSM extract stored locally and refreshed on a schedule",
+    "Only cameras the user adds by hand"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Where should camera locations come from?",
+  "why": "Free, no key, legally reusable under the ODbL with attribution, and it is where the community already maps these cameras"
+}

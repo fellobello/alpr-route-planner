@@ -1,0 +1,19 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [
+    "geo"
+  ],
+  "description": "Fill in validatePlanRequest and planRoutes in src/planner.js following the numbered algorithm and exact note strings in its JSDoc, using constants and errors from src/types.js and camerasNearRoute/bboxAround/bboxUnion/haversineM from src/geo.js. Work only through the injected cameraSource and router. Unit tests in test/unit/planner.test.js with fake sources and routers; npm test must pass.",
+  "id": "planner",
+  "kind": "build",
+  "module": "planner",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Implement route planning in src/planner.js",
+  "worktree": null
+}

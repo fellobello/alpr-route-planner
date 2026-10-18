@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Get the fastest route, find cameras within the buffer of it, block the roads at those cameras and re-route; repeat up to 4 times and show the route with the fewest cameras left",
+  "critical": true,
+  "id": "hub.7",
+  "options": [
+    "Block every camera in the trip area in one request (self-hosted router needed)",
+    "Score several alternate routes from the router and pick the one with fewest cameras, without blocking roads"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "How should the avoiding route be found?",
+  "why": "Blocking every camera in a city at once exceeds what the public router accepts; iterating only blocks the cameras that matter"
+}

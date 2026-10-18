@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "JavaScript on Node.js 22+ with zero npm dependencies (built-in http, fetch and test runner); plain JS frontend with Leaflet 1.9.4 from a CDN",
+  "critical": true,
+  "id": "hub.2",
+  "options": [
+    "Python + FastAPI backend with a plain JS frontend",
+    "TypeScript + React + Vite frontend with a Node backend"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Which language and framework?",
+  "why": "One language front and back, nothing to install, and npm test works out of the box"
+}

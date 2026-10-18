@@ -1,0 +1,16 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "Keep the folder name, but title the app 'ALPR Route Planner' and never use Flock's logo or branding",
+  "critical": true,
+  "id": "hub.10",
+  "options": [
+    "Use Flock in the title, like DeFlock did (EFF argues noncommercial criticism is protected)",
+    "Pick a different name"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "What should the app be called on screen, given Flock Safety has sent trademark letters to projects using its name?",
+  "why": "Flock sent DeFlock a cease-and-desist over its name in 2025; a neutral title avoids that fight while the app still labels Flock cameras by name"
+}

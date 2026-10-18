@@ -1,0 +1,17 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [],
+  "description": "Fill in src/server/app.js (parseBbox, errorStatus, createServer on node:http with /api/health, /api/config, /api/cameras, /api/route, static files from publicDir, 10 kB body limit, {error, code} errors, no path traversal, server never crashes on a handler error) and src/server/main.js (configFromEnv for PORT, HOST, CAMERA_SOURCE, ROUTER, OFFLINE; main prints the documented start line). planRoutes, sources and routers are used via their interfaces; tests inject fakes and a temp publicDir and listen on port 0. Unit tests in test/unit/api.test.js; npm test must pass.",
+  "id": "api",
+  "kind": "build",
+  "module": "api",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Implement HTTP server and entry point",
+  "worktree": null
+}

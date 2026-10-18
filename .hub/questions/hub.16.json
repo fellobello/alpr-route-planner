@@ -1,0 +1,15 @@
+{
+  "affects": [],
+  "answer": null,
+  "choice": "No, a camera counts in both directions of travel in the sample",
+  "critical": false,
+  "id": "hub.16",
+  "options": [
+    "Use the direction tag when present and only count cameras facing your travel direction"
+  ],
+  "round": 0,
+  "status": "decided",
+  "task": "hub",
+  "text": "Should camera direction (which way it faces) matter?",
+  "why": "Direction tags are often missing in OSM and matching heading to travel direction is a later refinement"
+}

@@ -1,0 +1,19 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [
+    "geo"
+  ],
+  "description": "Fill in src/routing/valhalla.js (buildValhallaRequest with exclude_locations, parseValhallaResponse decoding precision-6 shapes via geo.decodePolyline, ValhallaRouter with injected fetch, User-Agent, NoRouteError for Valhalla error_code 442/171, UpstreamError otherwise) and src/routing/stub.js (deterministic straight line or dog-leg per its JSDoc, using geo distances). Check the current Valhalla API docs for exclude_locations and note any surprise in a HUB ask. No network in tests. Unit tests in test/unit/routing.test.js; npm test must pass.",
+  "id": "routing",
+  "kind": "build",
+  "module": "routing",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Implement Valhalla and stub routers",
+  "worktree": null
+}

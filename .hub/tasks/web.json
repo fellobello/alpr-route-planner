@@ -1,0 +1,17 @@
+{
+  "attempts": 0,
+  "blocked_by": [],
+  "branch": null,
+  "depends_on": [],
+  "description": "Fill in public/lib.js exactly per its JSDoc (exact output strings). Write public/index.html, public/style.css and public/app.js: load Leaflet 1.9.4 from unpkg (pinned, with integrity), fetch /api/config, show OSM tiles with visible OpenStreetMap attribution, load cameras from /api/cameras on moveend when zoom >= minCameraZoom (circle markers, one placeholder color for Flock and one for other ALPRs, popup with manufacturer/operator), click cycle for start/end via nextClickState, buffer slider within config limits, Plan route button posting buildRouteRequest to /api/route, draw fastest (gray dashed) and avoiding (solid) routes, highlight hit cameras, results panel from summarizePlan, error messages from {error}, a note that coverage is incomplete, and 'Not affiliated with Flock Safety'. Title 'ALPR Route Planner'. No images or art. Unit tests for lib.js in test/unit/web.test.js; npm test must pass.",
+  "id": "web",
+  "kind": "build",
+  "module": "web",
+  "notes": [],
+  "previous_branches": [],
+  "round": 0,
+  "status": "todo",
+  "summary": null,
+  "title": "Build the browser map app in public/",
+  "worktree": null
+}
