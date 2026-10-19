@@ -77,12 +77,12 @@ Choices that shape everything else, made so work didn't have to wait. Confirm or
 
 None.
 
-## Smaller decisions this round (59)
+## Smaller decisions this round (58)
 
 Already built this way. Change any you disagree with; the reasons are in `.hub/questions/`.
 
 <details>
-<summary>Show all 59</summary>
+<summary>Show all 58</summary>
 
 - `api.1` How big is the 10 kB POST /api/route body limit, and what does an oversized body return? → **10,000 bytes, exported as MAX_BODY_BYTES from src/server/app.js; over the limit (by Content-Length or while streaming) is 413 {error, code: "BODY_TOO_LARGE"} with Connection: close**
 - `api.2` Which code values do HTTP-level errors that have no shared error class use? → **404 NOT_FOUND (unknown /api path, missing or blocked static file), 405 METHOD_NOT_ALLOWED with an Allow header, 413 BODY_TOO_LARGE; malformed JSON body is 400 INPUT**
@@ -119,7 +119,6 @@ Already built this way. Change any you disagree with; the reasons are in `.hub/q
 - `hub.16` Should camera direction (which way it faces) matter? → **No, a camera counts in both directions of travel in the sample**
 - `hub.17` How much longer may the avoiding route be than the fastest one? → **No limit: the route with the fewest cameras wins however much longer it is (ties go to the faster one); the results panel shows both times so you can compare**
 - `hub.18` With live data, your trip's start and end points are sent to the public FOSSGIS Valhalla server, and the trip area to the public Overpass server. Is that acceptable for a tool meant to avoid tracking? → **Yes for now: live routing needs it, the app itself stores nothing, and npm run offline sends nothing; the page does not yet say where trip points go**
-- `hub.19` Which license should the code use? → **MIT, set in package.json only; there is no LICENSE file yet**
 - `planner.1` Planner notes say "<n> camera(s)". Literal "(s)" or the real plural? → **Real plural: "1 camera", "2 cameras"**
 - `planner.2` Which cameras do the "can't be avoided" and "still passes" notes count? → **Both count the avoiding route: the first its cameras within bufferM of start or end, the second only its other (avoidable) cameras, so no camera is counted twice; a note whose count is 0 is left out**
 - `planner.3` Does an avoid call that fails with NoRouteError count in RoutePlan.iterations, and does "No other route was found." appear if an earlier reroute was already found? → **Yes to both: iterations counts every avoid call made, and the note is added whenever NoRouteError stops the search**
@@ -146,10 +145,11 @@ Already built this way. Change any you disagree with; the reasons are in `.hub/q
 
 </details>
 
-## Settled (5)
+## Settled (6)
 
 - `api-tests.1` What error code should POST /api/route return for a body that is not JSON (truncated, empty, or form-encoded)? The spec gives status 400 but no code. → dismissed: same as api.2
 - `cameras-tests.1` How should parseOverpass read camera direction when the JSDoc leaves details open? → dismissed: same as cameras.4
 - `cameras-tests.2` How strict should the acceptance tests be about how OverpassCameraSource splits and queries tiles? → dismissed: same as cameras.1
+- `hub.19` Which license should the code use? → None for now (all rights reserved); package.json says UNLICENSED
 - `planner-tests.1` The planner notes say "<n> camera(s)". Should the text read "camera(s)" literally or use the real plural ("1 camera", "2 cameras")? → dismissed: same as planner.1
 - `planner-tests.2` Which planner details does the spec leave open, so the acceptance tests do not check them? → dismissed: same as planner.2, planner.3, planner.4 and planner.5

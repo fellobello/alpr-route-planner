@@ -12,5 +12,5 @@
     "offline": "OFFLINE=1 node src/server/main.js",
     "test": "node --test \"test/**/*.test.js\""
   },
-  "license": "MIT"
+  "license": "UNLICENSED"
 }

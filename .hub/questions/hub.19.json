@@ -1,6 +1,6 @@
 {
   "affects": [],
-  "answer": null,
+  "answer": "None for now (all rights reserved); package.json says UNLICENSED",
   "choice": "MIT, set in package.json only; there is no LICENSE file yet",
   "critical": false,
   "id": "hub.19",
@@ -10,7 +10,7 @@
     "No license (all rights reserved) until you decide"
   ],
   "round": 0,
-  "status": "decided",
+  "status": "answered",
   "task": "hub",
   "text": "Which license should the code use?",
   "why": "Nobody asked this. The scaffold set it, and it matters before the repo goes public on GitHub"
