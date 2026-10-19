@@ -3,7 +3,9 @@
 A map that shows automated license plate reader (ALPR) cameras, including Flock Safety
 cameras, and plans a driving route that avoids them, next to the normal fastest route.
 
-This is a sample build: working code, placeholder visuals.
+This is a sample build: working code, placeholder visuals. It was built by
+[roughcut](https://github.com/fellobello/roughcut) from a one-line idea, with agents writing all of the code;
+`.hub/` holds the plan, the tasks and every decision they made, and `QUESTIONS.md` lists what's still open.
 
 ## Run
 
