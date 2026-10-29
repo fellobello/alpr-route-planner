@@ -23,7 +23,7 @@ const L = /** @type {any} */ (window).L;
 
 /** Used only when GET /api/config fails, so the map still opens. Same values as src/types.js. */
 const FALLBACK_CONFIG = {
-  center: { lat: 33.749, lon: -84.388 },
+  center: { lat: 35.2828, lon: -120.6596 },
   zoom: 13,
   minCameraZoom: 12,
   defaultBufferM: 75,
@@ -472,7 +472,7 @@ async function init() {
   renderBuffer();
 
   const notes = [];
-  if (config.cameraSource === 'fixture') notes.push('Offline demo: the cameras are made-up samples in central Atlanta.');
+  if (config.cameraSource === 'fixture') notes.push('Offline demo: the cameras are made-up samples in San Luis Obispo.');
   if (config.router === 'stub') notes.push('Routes are straight-line placeholders, not real roads.');
   ui.sourceNote.textContent = notes.join(' ');
   ui.sourceNote.hidden = notes.length === 0;

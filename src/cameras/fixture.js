@@ -7,7 +7,7 @@
  * data/sample-cameras.json schema:
  *   { "note": "Made-up cameras for offline demos. Not real locations.",
  *     "cameras": Camera[] }   // 20-40 entries, ids "sample:<n>", source "sample",
- *                             // spread over central Atlanta (lat 33.70-33.80, lon -84.45 to -84.33),
+ *                             // spread over San Luis Obispo (lat 35.24-35.31, lon -120.69 to -120.62),
  *                             // mostly on major roads, about a third with isFlock true.
  */
 import { readFileSync } from 'node:fs';

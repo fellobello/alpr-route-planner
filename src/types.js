@@ -118,8 +118,8 @@ export const CORRIDOR_MARGIN_M = 2_000;
 export const MAX_AVOID_ITERATIONS = 4;
 /** Max width or height of a bbox accepted by GET /api/cameras, in degrees. */
 export const MAX_BBOX_SPAN_DEG = 0.5;
-/** Default map view: Atlanta, GA. */
-export const DEFAULT_CENTER = Object.freeze({ lat: 33.749, lon: -84.388 });
+/** Default map view: San Luis Obispo, CA. */
+export const DEFAULT_CENTER = Object.freeze({ lat: 35.2828, lon: -120.6596 });
 export const DEFAULT_ZOOM = 13;
 /** The map only loads cameras at this zoom or closer. */
 export const MIN_CAMERA_ZOOM = 12;

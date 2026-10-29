@@ -649,7 +649,7 @@ test('app still opens the map when the server is unreachable', async () => {
     '/api/config': () => ({ status: 0, throws: true }),
     '/api/cameras': () => ({ status: 0, throws: true }),
   });
-  assert.deepEqual(app.map.center, [33.749, -84.388]);
+  assert.deepEqual(app.map.center, [35.2828, -120.6596]);
   assert.equal(app.el('error').hidden, false);
   assert.equal(
     app.el('error').textContent,

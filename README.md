@@ -11,7 +11,7 @@ This is a sample build and it was built by
 Needs Node.js 22 or newer. There are no npm dependencies to install.
 
     npm start          # live data: OpenStreetMap cameras via Overpass, routes via the public Valhalla server
-    npm run offline    # no network: made-up sample cameras in Atlanta and a straight-line stub router
+    npm run offline    # no network: made-up sample cameras in San Luis Obispo and a straight-line stub router
 
 Then open localhost:8080. Click the map once for the start, again for the end.
 

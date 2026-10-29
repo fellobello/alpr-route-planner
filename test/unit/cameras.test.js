@@ -494,8 +494,8 @@ describe('loadSampleCameras and data/sample-cameras.json', () => {
     cams.forEach((c, i) => {
       assert.equal(c.id, `sample:${i + 1}`);
       assert.equal(c.source, 'sample');
-      assert.ok(c.lat >= 33.7 && c.lat <= 33.8, `${c.id} lat ${c.lat}`);
-      assert.ok(c.lon >= -84.45 && c.lon <= -84.33, `${c.id} lon ${c.lon}`);
+      assert.ok(c.lat >= 35.24 && c.lat <= 35.31, `${c.id} lat ${c.lat}`);
+      assert.ok(c.lon >= -120.69 && c.lon <= -120.62, `${c.id} lon ${c.lon}`);
       assert.equal(typeof c.isFlock, 'boolean');
       assert.equal(c.isFlock, /flock/i.test(c.manufacturer ?? ''), `${c.id} isFlock matches manufacturer`);
       assert.ok(c.direction === null || (c.direction >= 0 && c.direction < 360));
@@ -574,9 +574,9 @@ describe('FixtureCameraSource', () => {
 
   test('defaults to the bundled sample file', async () => {
     const src = new FixtureCameraSource();
-    const all = await src.getCameras({ south: 33.6, west: -84.5, north: 33.9, east: -84.2 });
+    const all = await src.getCameras({ south: 35.2, west: -120.75, north: 35.35, east: -120.6 });
     assert.deepEqual(all, loadSampleCameras());
-    const downtown = await src.getCameras({ south: 33.745, west: -84.395, north: 33.76, east: -84.37 });
+    const downtown = await src.getCameras({ south: 35.275, west: -120.668, north: 35.282, east: -120.658 });
     assert.ok(downtown.length >= 1 && downtown.length < all.length);
   });
 

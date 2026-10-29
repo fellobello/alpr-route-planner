@@ -646,10 +646,10 @@ describe('sample file data/sample-cameras.json', () => {
     assert.equal(new Set(all).size, all.length, 'duplicate ids');
   });
 
-  test('every camera is in central Atlanta (lat 33.70-33.80, lon -84.45 to -84.33)', () => {
+  test('every camera is in San Luis Obispo (lat 35.24-35.31, lon -120.69 to -120.62)', () => {
     for (const c of readSampleFile().cameras) {
-      assert.ok(c.lat >= 33.7 && c.lat <= 33.8, `${c.id} lat ${c.lat} out of range`);
-      assert.ok(c.lon >= -84.45 && c.lon <= -84.33, `${c.id} lon ${c.lon} out of range`);
+      assert.ok(c.lat >= 35.24 && c.lat <= 35.31, `${c.id} lat ${c.lat} out of range`);
+      assert.ok(c.lon >= -120.69 && c.lon <= -120.62, `${c.id} lon ${c.lon} out of range`);
     }
   });
 
@@ -756,10 +756,10 @@ describe('FixtureCameraSource', () => {
 
   test('without injected cameras, serves the sample file cameras (loadSampleCameras())', async () => {
     const got = await new FixtureCameraSource().getCameras({
-      south: 33.6,
-      west: -84.6,
-      north: 33.9,
-      east: -84.2,
+      south: 35.2,
+      west: -120.75,
+      north: 35.35,
+      east: -120.6,
     });
     assert.deepEqual(ids(got), ids(readSampleFile().cameras));
   });
