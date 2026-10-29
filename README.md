@@ -49,8 +49,13 @@ app plus the planner, and talks to Overpass, Valhalla and Nominatim directly.
     npm run apk            # builds mobile/android/app/build/outputs/apk/debug/app-debug.apk
     npm run install-apk    # installs it on a phone connected with USB debugging (adb)
 
-Building needs the Android SDK (Android Studio, or the command-line tools with
-`platforms;android-36` and `build-tools`) and JDK 21. `npm run open` opens the project in
+Building needs JDK 21 and the Android SDK, from Android Studio or the command-line tools:
+
+    brew install --cask android-commandlinetools
+    yes | sdkmanager --licenses
+    sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+    echo "sdk.dir=/opt/homebrew/share/android-commandlinetools" > mobile/android/local.properties
+ `npm run open` opens the project in
 Android Studio. If the server has cached camera tiles in `data/cache/`, they are bundled as the
 app's starter data.
 
