@@ -1,11 +1,10 @@
-# ALPR Route Planner (flock-camera-map)
+# ALPR Route Planner
 
-A map that shows automated license plate reader (ALPR) cameras, including Flock Safety
-cameras, and plans a driving route that avoids them, next to the normal fastest route.
+A map that shows automated license plate reader (ALPR) cameras, primarily Flock Safety
+cameras, and plans a driving route that avoids them.
 
-This is a sample build: working code, placeholder visuals. It was built by
-[roughcut](https://github.com/fellobello/roughcut) from a one-line idea, with agents writing all of the code;
-`.hub/` holds the plan, the tasks and every decision they made, and `QUESTIONS.md` lists what's still open.
+This is a sample build and it was built by
+[roughcut](https://github.com/fellobello/roughcut) from a one-line idea.
 
 ## Run
 
@@ -14,16 +13,14 @@ Needs Node.js 22 or newer. There are no npm dependencies to install.
     npm start          # live data: OpenStreetMap cameras via Overpass, routes via the public Valhalla server
     npm run offline    # no network: made-up sample cameras in Atlanta and a straight-line stub router
 
-Then open http://127.0.0.1:8080. Click the map once for the start, again for the end.
+Then open localhost:8080. Click the map once for the start, again for the end.
 
 Set `CONTACT=you@example.com` to include a contact in the User-Agent sent to Overpass and Valhalla,
-as their usage policies ask.
+if you wish to follow their usage policies.
 
 ## Test
 
     npm test
-
-Tests never touch the network: outside services are faked through injected `fetch`.
 
 ## Layout
 
