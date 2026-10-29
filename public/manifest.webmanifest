@@ -1,0 +1,12 @@
+{
+  "name": "ALPR Route Planner",
+  "short_name": "ALPR Routes",
+  "description": "See license plate reader cameras on a map and plan a driving route that avoids them.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

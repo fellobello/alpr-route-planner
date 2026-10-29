@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   APP_TITLE,
+  APP_VERSION,
   DEFAULT_BUFFER_M,
   DEFAULT_CENTER,
   DEFAULT_ZOOM,
@@ -262,7 +263,9 @@ describe('createServer API routes', () => {
       maxBboxSpanDeg: MAX_BBOX_SPAN_DEG,
       cameraSource: 'fake-source',
       router: 'fake-router',
+      geocoder: 'coordinates',
       appTitle: APP_TITLE,
+      version: APP_VERSION,
     });
   });
 

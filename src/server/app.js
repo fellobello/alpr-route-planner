@@ -9,6 +9,9 @@
  *   GET  /api/cameras?bbox=S,W,N,E   200 {cameras: Camera[], source: <cameraSource.name>}
  *                                    400 when bbox is missing/malformed, south > north, west > east,
  *                                        or a side spans more than MAX_BBOX_SPAN_DEG
+ *   GET  /api/geocode?q=<text>[&near=lat,lon]
+ *                                    200 {results: Place[]}; 400 when q is missing or too long,
+ *                                        502 when the geocoder fails
  *   POST /api/route   body PlanRequest (JSON, at most 10 kB)
  *                                    200 RoutePlan
  *                                    400 bad JSON or InputError, 413 body too large,
@@ -18,34 +21,22 @@
  *   other /api/* or wrong method     404 / 405 as JSON
  * Every error response body is {error: <message>, code: <err.code or "INTERNAL">};
  * unexpected errors are 500 and are logged without crashing the server.
+ * The behavior behind each /api route lives in ../api.js; this file is the HTTP around it.
  */
 import http from 'node:http';
 import path from 'node:path';
 import { readFile, realpath, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import {
-  APP_TITLE,
-  DEFAULT_BUFFER_M,
-  DEFAULT_CENTER,
-  DEFAULT_ZOOM,
-  InputError,
-  MAX_BBOX_SPAN_DEG,
-  MAX_BUFFER_M,
-  MAX_TRIP_M,
-  MIN_BUFFER_M,
-  MIN_CAMERA_ZOOM,
-  NoRouteError,
-  TripTooLongError,
-  UpstreamError,
-} from '../types.js';
-import { planRoutes as defaultPlanRoutes } from '../planner.js';
+import { InputError } from '../types.js';
+import { createApi, errorStatus, parseBbox } from '../api.js';
 
-/** @typedef {import('../types.js').BBox} BBox */
+export { errorStatus, parseBbox };
+
 /** @typedef {import('../types.js').CameraSource} CameraSource */
 /** @typedef {import('../types.js').Router} Router */
 /** @typedef {import('../types.js').PlanRequest} PlanRequest */
 /** @typedef {import('../types.js').RoutePlan} RoutePlan */
-/** @typedef {import('../types.js').ClientConfig} ClientConfig */
+/** @typedef {import('../types.js').Geocoder} Geocoder */
 
 export const DEFAULT_PUBLIC_DIR = new URL('../../public/', import.meta.url);
 
@@ -53,12 +44,6 @@ export const DEFAULT_PUBLIC_DIR = new URL('../../public/', import.meta.url);
 export const MAX_BODY_BYTES = 10_000;
 
 const JSON_TYPE = 'application/json; charset=utf-8';
-
-/** Rounding slack for the bbox span check, so a client's 0.5-degree box is not refused over 1e-15. */
-const SPAN_EPSILON_DEG = 1e-9;
-
-/** A plain decimal number: optional sign, digits with optional fraction, optional exponent. */
-const DECIMAL_RE = /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$/;
 
 /** Content types for files served from publicDir; anything else is application/octet-stream. */
 const CONTENT_TYPES = /** @type {Record<string, string>} */ ({
@@ -68,6 +53,7 @@ const CONTENT_TYPES = /** @type {Record<string, string>} */ ({
   '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.map': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.svg': 'image/svg+xml',
@@ -80,6 +66,25 @@ const CONTENT_TYPES = /** @type {Record<string, string>} */ ({
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
 });
+
+/**
+ * Sent with every page and file. Tiles are the only outside requests the page makes; the
+ * default Referrer-Policy is kept because the OSM tile policy asks for a Referer.
+ */
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'Content-Security-Policy': [
+    "default-src 'self'",
+    "img-src 'self' data: https://tile.openstreetmap.org",
+    "style-src 'self' 'unsafe-inline'",
+    "connect-src 'self'",
+    "frame-ancestors 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+  ].join('; '),
+  'X-Frame-Options': 'DENY',
+  'Permissions-Policy': 'geolocation=(self), camera=(), microphone=()',
+};
 
 /** An HTTP-level failure that is not one of the shared error classes (404, 405, 413). */
 class HttpError extends Error {
@@ -99,89 +104,30 @@ class HttpError extends Error {
 }
 
 /**
- * Parse "south,west,north,east" (decimal degrees). Throws InputError when it is not exactly
- * four finite numbers, south > north, west > east, out of range, or either span exceeds
- * MAX_BBOX_SPAN_DEG.
- * @param {string|null|undefined} text
- * @returns {BBox}
- */
-export function parseBbox(text) {
-  if (typeof text !== 'string' || text.trim() === '') {
-    throw new InputError('bbox is required as south,west,north,east');
-  }
-  const parts = text.split(',').map((p) => p.trim());
-  if (parts.length !== 4) {
-    throw new InputError(`bbox must have 4 numbers (south,west,north,east), got ${parts.length}`);
-  }
-  const nums = parts.map((p) => (DECIMAL_RE.test(p) ? Number(p) : NaN));
-  if (!nums.every(Number.isFinite)) {
-    throw new InputError('bbox must be 4 decimal numbers: south,west,north,east');
-  }
-  const [south, west, north, east] = nums;
-  if (south < -90 || south > 90 || north < -90 || north > 90) {
-    throw new InputError('bbox latitudes must be between -90 and 90');
-  }
-  if (west < -180 || west > 180 || east < -180 || east > 180) {
-    throw new InputError('bbox longitudes must be between -180 and 180');
-  }
-  if (south > north) throw new InputError('bbox south must not be greater than north');
-  if (west > east) throw new InputError('bbox west must not be greater than east');
-  if (north - south > MAX_BBOX_SPAN_DEG + SPAN_EPSILON_DEG || east - west > MAX_BBOX_SPAN_DEG + SPAN_EPSILON_DEG) {
-    throw new InputError(`bbox is too large: each side may span at most ${MAX_BBOX_SPAN_DEG} degrees; zoom in`);
-  }
-  return { south, west, north, east };
-}
-
-/**
- * HTTP status for an error thrown by a handler: TripTooLongError 422, InputError 400,
- * NoRouteError 422, UpstreamError 502, anything else 500.
- * @param {unknown} err
- * @returns {number}
- */
-export function errorStatus(err) {
-  // TripTooLongError extends InputError, so it must be checked first.
-  if (err instanceof TripTooLongError) return 422;
-  if (err instanceof InputError) return 400;
-  if (err instanceof NoRouteError) return 422;
-  if (err instanceof UpstreamError) return 502;
-  return 500;
-}
-
-/**
  * Build (but do not start) the server.
  * @param {Object} deps
  * @param {CameraSource} deps.cameraSource
  * @param {Router} deps.router
+ * @param {Geocoder|null} [deps.geocoder]  place search; without one, /api/geocode only reads "lat, lon"
  * @param {(req: PlanRequest, deps: {cameraSource: CameraSource, router: Router}) => Promise<RoutePlan>} [deps.planRoutes]
  *        defaults to planRoutes from ../planner.js; tests inject a fake
  * @param {string|URL} [deps.publicDir=DEFAULT_PUBLIC_DIR]
  * @returns {import('node:http').Server}
  */
 export function createServer(deps) {
-  const { cameraSource, router } = deps;
-  const plan = deps.planRoutes ?? defaultPlanRoutes;
+  const api = createApi(deps);
   const publicRoot = path.resolve(toPath(deps.publicDir ?? DEFAULT_PUBLIC_DIR));
 
   /** @type {Record<string, Record<string, (req: http.IncomingMessage, url: URL) => Promise<unknown>>>} */
   const apiRoutes = {
-    '/api/health': {
-      GET: async () => ({ ok: true, cameraSource: cameraSource.name, router: router.name }),
-    },
-    '/api/config': {
-      GET: async () => clientConfig(cameraSource, router),
-    },
-    '/api/cameras': {
-      GET: async (_req, url) => {
-        const bbox = parseBbox(url.searchParams.get('bbox'));
-        const cameras = await cameraSource.getCameras(bbox);
-        return { cameras, source: cameraSource.name };
-      },
+    '/api/health': { GET: async () => api.health() },
+    '/api/config': { GET: async () => api.config() },
+    '/api/cameras': { GET: async (_req, url) => api.cameras(url.searchParams.get('bbox')) },
+    '/api/geocode': {
+      GET: async (_req, url) => api.geocode(url.searchParams.get('q'), url.searchParams.get('near')),
     },
     '/api/route': {
-      POST: async (req) => {
-        const body = parseJsonBody(await readBody(req, MAX_BODY_BYTES));
-        return plan(/** @type {PlanRequest} */ (body), { cameraSource, router });
-      },
+      POST: async (req) => api.route(parseJsonBody(await readBody(req, MAX_BODY_BYTES))),
     },
   };
 
@@ -249,27 +195,6 @@ function parseUrl(rawUrl) {
   } catch {
     throw new InputError('Malformed request URL');
   }
-}
-
-/**
- * @param {CameraSource} cameraSource
- * @param {Router} router
- * @returns {ClientConfig}
- */
-function clientConfig(cameraSource, router) {
-  return {
-    center: { lat: DEFAULT_CENTER.lat, lon: DEFAULT_CENTER.lon },
-    zoom: DEFAULT_ZOOM,
-    minCameraZoom: MIN_CAMERA_ZOOM,
-    defaultBufferM: DEFAULT_BUFFER_M,
-    minBufferM: MIN_BUFFER_M,
-    maxBufferM: MAX_BUFFER_M,
-    maxTripM: MAX_TRIP_M,
-    maxBboxSpanDeg: MAX_BBOX_SPAN_DEG,
-    cameraSource: cameraSource.name,
-    router: router.name,
-    appTitle: APP_TITLE,
-  };
 }
 
 /**
@@ -384,7 +309,7 @@ async function serveStatic(res, root, pathname) {
     'Content-Type': CONTENT_TYPES[path.extname(filePath).toLowerCase()] ?? 'application/octet-stream',
     'Content-Length': data.length,
     'Cache-Control': 'no-cache',
-    'X-Content-Type-Options': 'nosniff',
+    ...SECURITY_HEADERS,
   });
   res.end(data);
 }

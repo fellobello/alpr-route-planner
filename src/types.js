@@ -101,12 +101,33 @@
  * @property {number} maxBboxSpanDeg
  * @property {string} cameraSource     name of the active CameraSource
  * @property {string} router           name of the active Router
+ * @property {string} geocoder         name of the active Geocoder, or "coordinates" when search only takes "lat, lon"
  * @property {string} appTitle
+ * @property {string} version
+ */
+
+/**
+ * One place search result.
+ * @typedef {Object} Place
+ * @property {string} name     Short label, e.g. "Mission Plaza".
+ * @property {string} detail   The rest of the address, e.g. "San Luis Obispo, California, United States". May be "".
+ * @property {number} lat
+ * @property {number} lon
+ */
+
+/**
+ * Turns a typed address or place name into points. Implementation: NominatimGeocoder.
+ * search resolves to at most GEOCODE_LIMIT places, best first; [] when nothing matches.
+ * It rejects with UpstreamError when the service fails.
+ * @typedef {Object} Geocoder
+ * @property {string} name                                                "nominatim"
+ * @property {(query: string, near?: LatLng|null) => Promise<Place[]>} search
  */
 
 // ---- Constants (decisions recorded in .hub/questions) ----
 
 export const APP_TITLE = 'ALPR Route Planner';
+export const APP_VERSION = '1.0.0';
 export const DEFAULT_BUFFER_M = 75;
 export const MIN_BUFFER_M = 15;
 export const MAX_BUFFER_M = 300;
@@ -123,13 +144,17 @@ export const DEFAULT_CENTER = Object.freeze({ lat: 35.2828, lon: -120.6596 });
 export const DEFAULT_ZOOM = 13;
 /** The map only loads cameras at this zoom or closer. */
 export const MIN_CAMERA_ZOOM = 12;
+/** Max results from a Geocoder. */
+export const GEOCODE_LIMIT = 5;
+/** Longest accepted search text, in characters. */
+export const MAX_QUERY_CHARS = 200;
 /** Camera cache lifetime for OverpassCameraSource. */
 export const CAMERA_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 /**
  * User-Agent sent to Overpass and Valhalla (their usage policies ask for an identifying one).
  * Set CONTACT to an email or URL to include it.
  */
-export const USER_AGENT = `alpr-route-planner/0.1 (${process.env.CONTACT || 'local sample build'})`;
+export const USER_AGENT = `alpr-route-planner/${APP_VERSION} (${globalThis.process?.env?.CONTACT || 'self-hosted'})`;
 
 // ---- Errors. `code` is what the API puts in {error, code}. ----
 

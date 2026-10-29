@@ -1,0 +1,8 @@
+node_modules
+mobile
+.git
+.hub
+.worktrees
+.claude
+test
+data/cache

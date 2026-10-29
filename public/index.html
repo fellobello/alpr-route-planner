@@ -2,48 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ALPR Route Planner</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <meta name="description" content="See license plate reader cameras on a map and plan a driving route that avoids them.">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="vendor/leaflet/leaflet.js"></script>
   <script type="module" src="app.js"></script>
 </head>
 <body>
   <div id="layout">
-    <aside id="panel" aria-label="Route planner">
-      <h1>ALPR Route Planner</h1>
-      <p class="intro">Shows license plate reader cameras mapped in OpenStreetMap and plans a driving route around them.</p>
+    <main id="map" aria-label="Map"></main>
 
-      <section aria-labelledby="h-route">
-        <h2 id="h-route">Route</h2>
+    <div class="map-overlay" aria-live="polite">
+      <p id="camera-status" class="pill">Loading cameras...</p>
+    </div>
+    <button id="locate" type="button" class="map-button" aria-label="Show my location" title="Show my location" hidden>
+      <span class="icon icon-locate" aria-hidden="true"></span>
+    </button>
+
+    <aside id="panel" aria-label="Route planner">
+      <button id="sheet-handle" type="button" class="sheet-handle" aria-label="Collapse panel" aria-expanded="true"></button>
+
+      <header class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h1>ALPR Route Planner</h1>
+          <p class="tagline">Drive around license plate readers</p>
+        </div>
+      </header>
+
+      <p id="source-note" class="banner" hidden></p>
+
+      <section class="card" aria-labelledby="h-route">
+        <h2 id="h-route" class="visually-hidden">Trip</h2>
+
+        <div class="stops">
+          <form id="start-form" class="stop" role="search" autocomplete="off">
+            <span class="stop-dot stop-start" aria-hidden="true"></span>
+            <div class="stop-field">
+              <label for="start-input" class="visually-hidden">Start</label>
+              <input id="start-input" type="search" placeholder="Start: search or use the map" enterkeyhint="search">
+              <span id="start-text" class="stop-coords"></span>
+            </div>
+            <button id="start-locate" type="button" class="icon-button" aria-label="Use my location as the start" title="Use my location" hidden>
+              <span class="icon icon-locate" aria-hidden="true"></span>
+            </button>
+            <ul id="start-results" class="search-results" role="listbox" aria-label="Start suggestions" hidden></ul>
+          </form>
+
+          <form id="end-form" class="stop" role="search" autocomplete="off">
+            <span class="stop-dot stop-end" aria-hidden="true"></span>
+            <div class="stop-field">
+              <label for="end-input" class="visually-hidden">Destination</label>
+              <input id="end-input" type="search" placeholder="Destination: search or use the map" enterkeyhint="search">
+              <span id="end-text" class="stop-coords"></span>
+            </div>
+            <button id="swap" type="button" class="icon-button" aria-label="Swap start and destination" title="Swap start and destination">
+              <span class="icon icon-swap" aria-hidden="true"></span>
+            </button>
+            <ul id="end-results" class="search-results" role="listbox" aria-label="Destination suggestions" hidden></ul>
+          </form>
+        </div>
+
         <p id="hint" class="hint">Loading...</p>
-        <p class="points">
-          <span>Start: <b id="start-text">not set</b></span>
-          <span>End: <b id="end-text">not set</b></span>
-        </p>
-        <label for="buffer" class="buffer-label">
-          Camera distance: <b id="buffer-value">75 m</b>
-        </label>
-        <input id="buffer" type="range" min="15" max="300" step="5" value="75">
-        <p class="small">A route counts as passing a camera when it comes this close.</p>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="buffer">Stay this far from cameras</label>
+            <output id="buffer-value" for="buffer">75 m</output>
+          </div>
+          <input id="buffer" type="range" min="15" max="300" step="5" value="75">
+        </div>
+
         <div class="buttons">
-          <button id="plan" type="button" disabled>Plan route</button>
+          <button id="plan" type="button" class="primary" disabled>Plan route</button>
           <button id="clear" type="button" class="secondary">Clear</button>
         </div>
         <p id="error" class="error" role="alert" hidden></p>
       </section>
 
-      <section id="results" aria-labelledby="h-results" aria-live="polite" hidden>
-        <h2 id="h-results">Results</h2>
+      <section id="results" class="card" aria-labelledby="h-results" aria-live="polite" hidden>
+        <h2 id="h-results">Routes</h2>
         <div id="results-body"></div>
-        <p id="stale" class="small" hidden>Camera distance changed. Plan again to update.</p>
+        <p id="stale" class="note" hidden>Camera distance changed. Plan again to update.</p>
       </section>
 
-      <section aria-labelledby="h-legend">
-        <h2 id="h-legend">Map key</h2>
+      <details class="card disclosure">
+        <summary><h2 id="h-legend">Map key</h2></summary>
         <ul class="legend">
           <li><span class="swatch dot flock"></span> Flock camera</li>
           <li><span class="swatch dot other"></span> Other ALPR camera</li>
@@ -51,17 +101,20 @@
           <li><span class="swatch line fastest"></span> Fastest route</li>
           <li><span class="swatch line avoiding"></span> Route avoiding cameras</li>
         </ul>
-        <p id="camera-status" class="small">Loading cameras...</p>
-        <p id="source-note" class="small" hidden></p>
-      </section>
+      </details>
+
+      <details class="card disclosure">
+        <summary><h2>About this map</h2></summary>
+        <p class="disclaimer"><b>Coverage is incomplete.</b> Camera locations are crowd-sourced and can be missing or out of date. A route that avoids every mapped camera can still pass unmapped ones.</p>
+        <p>Cameras come from OpenStreetMap volunteers. If you know of a camera that is missing, you can <a href="https://wiki.openstreetmap.org/wiki/Tag:surveillance:type%3DALPR" target="_blank" rel="noopener">add it to OpenStreetMap</a>.</p>
+        <p>Routes by <a href="https://valhalla.github.io/valhalla/" target="_blank" rel="noopener">Valhalla</a>, search by <a href="https://nominatim.org/" target="_blank" rel="noopener">Nominatim</a>.</p>
+      </details>
 
       <footer>
-        <p class="disclaimer"><b>Coverage is incomplete.</b> Camera locations are crowd-sourced and can be missing or out of date. A route that avoids every mapped camera can still pass unmapped ones.</p>
-        <p class="small">Camera data and map tiles &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>.</p>
-        <p class="small">Not affiliated with Flock Safety.</p>
+        <p>Camera data and map tiles &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>.</p>
+        <p>Not affiliated with Flock Safety. <span id="version"></span></p>
       </footer>
     </aside>
-    <main id="map" aria-label="Map"></main>
   </div>
 </body>
 </html>

@@ -3,3 +3,4 @@
 .hub/.tmp-*
 node_modules/
 .DS_Store
+data/cache/

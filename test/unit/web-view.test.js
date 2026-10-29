@@ -9,6 +9,8 @@ import {
   cameraStyle,
   clampBounds,
   clickHint,
+  planVerdict,
+  pointLabel,
   errorMessage,
   mergeCameras,
   sliderStep,
@@ -113,7 +115,9 @@ test('cameraPopup says which routes pass the camera', () => {
 
 test('errorMessage uses the API {error} text', () => {
   assert.equal(errorMessage(422, { error: 'Trip is too long.', code: 'TRIP_TOO_LONG' }), 'Trip is too long.');
-  assert.equal(errorMessage(502, { error: '  overpass: timeout ', code: 'UPSTREAM' }), 'overpass: timeout');
+  assert.equal(errorMessage(502, { error: '  overpass: timeout ', code: 'UPSTREAM' }), 'The OpenStreetMap camera service is busy or down. Try again in a minute.');
+  assert.match(errorMessage(502, { error: 'valhalla: HTTP 503', code: 'UPSTREAM' }), /^The routing service/);
+  assert.equal(errorMessage(502, { error: 'other: x', code: 'UPSTREAM' }), 'other: x');
 });
 
 test('errorMessage falls back to the status when there is no usable {error}', () => {
@@ -141,9 +145,9 @@ test('cameraStatus texts', () => {
 
 test('clickHint follows the click cycle', () => {
   const p = { lat: 1, lon: 2 };
-  assert.equal(clickHint({ start: null, end: null }), 'Click the map to set the start.');
-  assert.equal(clickHint({ start: p, end: null }), 'Click the map to set the end.');
-  assert.equal(clickHint({ start: p, end: p }), 'Ready. Click the map again to start over.');
+  assert.equal(clickHint({ start: null, end: null }), 'Search for a place, or click the map, to set the start.');
+  assert.equal(clickHint({ start: p, end: null }), 'Now set the destination.');
+  assert.equal(clickHint({ start: p, end: p }), 'Ready to plan. Clicking the map again starts over.');
 });
 
 test('sliderStep is 5 m for round limits, else 1 m', () => {
@@ -156,4 +160,19 @@ test('view.js has no DOM or Leaflet dependency', async () => {
   const src = await readFile(new URL('../../public/view.js', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /\b(document|window)\b|\bL\./);
   assert.doesNotMatch(src, /^import /m);
+});
+
+test('planVerdict compares the routes in one sentence', () => {
+  const r = (/** @type {number} */ n, extraText = 'no extra time') => ({ cameraCount: n, extraText });
+  assert.equal(planVerdict({ fastest: r(0), avoiding: r(0), same: true }), 'The fastest route passes no mapped cameras.');
+  assert.equal(planVerdict({ fastest: r(2), avoiding: r(2), same: true }), 'No route found that passes fewer mapped cameras.');
+  assert.equal(planVerdict({ fastest: r(3), avoiding: r(0, '+4 min'), same: false }), 'Avoids all 3 cameras for 4 min more.');
+  assert.equal(planVerdict({ fastest: r(3), avoiding: r(2), same: false }), 'Avoids 1 camera of 3 at no extra time.');
+});
+
+test('pointLabel prefers the place name, else coordinates, else empty', () => {
+  const p = { lat: 35.28281, lon: -120.659612 };
+  assert.equal(pointLabel(p, 'Mission Plaza'), 'Mission Plaza');
+  assert.equal(pointLabel(p), '35.28281, -120.65961');
+  assert.equal(pointLabel(null, 'x'), '');
 });

@@ -1,0 +1,23 @@
+{
+  "name": "alpr-route-planner-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Android build of ALPR Route Planner (Capacitor). The web app and planner run on the device.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-www.js",
+    "sync": "node scripts/build-www.js && cap sync android",
+    "apk": "node scripts/build-www.js && cap sync android && cd android && ./gradlew assembleDebug",
+    "install-apk": "adb install -r android/app/build/outputs/apk/debug/app-debug.apk",
+    "open": "cap open android"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "leaflet": "1.9.4"
+  }
+}

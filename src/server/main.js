@@ -8,32 +8,54 @@
  *   HOST           default 127.0.0.1
  *   CAMERA_SOURCE  "overpass" (default) | "fixture"
  *   ROUTER         "valhalla" (default) | "stub"
- *   OFFLINE=1      same as CAMERA_SOURCE=fixture ROUTER=stub
+ *   GEOCODER       "nominatim" (default) | "none" (search then only reads typed "lat, lon")
+ *   OFFLINE=1      same as CAMERA_SOURCE=fixture ROUTER=stub GEOCODER=none
  *   CONTACT        email or URL added to the User-Agent sent to Overpass and Valhalla
+ *   CACHE_FILE     where Overpass tiles are kept between runs (default data/cache/overpass-tiles.json);
+ *                  "off" keeps them in memory only
  * Unknown CAMERA_SOURCE / ROUTER values exit with code 1 and a message.
  * On start it prints: "ALPR Route Planner on http://<host>:<port> (cameras: <name>, router: <name>)".
+ * SIGINT / SIGTERM close the server, letting requests in flight finish.
  */
 import { pathToFileURL } from 'node:url';
 import { APP_TITLE, InputError, USER_AGENT } from '../types.js';
-import { OverpassCameraSource } from '../cameras/overpass.js';
+import { OVERPASS_ENDPOINTS, OverpassCameraSource } from '../cameras/overpass.js';
+import { DEFAULT_CACHE_FILE, FileTileStore } from '../cameras/tile-store.js';
 import { FixtureCameraSource } from '../cameras/fixture.js';
 import { ValhallaRouter } from '../routing/valhalla.js';
 import { StubRouter } from '../routing/stub.js';
+import { NominatimGeocoder } from '../geocode/nominatim.js';
 import { createServer } from './app.js';
 
 const DEFAULT_PORT = 8080;
 const DEFAULT_HOST = '127.0.0.1';
 
-/** @type {Record<string, (userAgent: string) => import('../types.js').CameraSource>} */
+/** @type {Record<string, (userAgent: string, env: Record<string, string|undefined>) => import('../types.js').CameraSource>} */
 const CAMERA_SOURCES = {
-  overpass: (userAgent) => new OverpassCameraSource({ userAgent }),
+  overpass: (userAgent, env) => new OverpassCameraSource({ userAgent, endpoints: OVERPASS_ENDPOINTS, store: tileStore(env) }),
   fixture: () => new FixtureCameraSource(),
 };
+
+/**
+ * @param {Record<string, string|undefined>} env
+ * @returns {FileTileStore|null}
+ */
+function tileStore(env) {
+  const file = env.CACHE_FILE?.trim();
+  if (file && OFF_VALUES.has(file.toLowerCase())) return null;
+  return new FileTileStore(file || DEFAULT_CACHE_FILE);
+}
 
 /** @type {Record<string, (userAgent: string) => import('../types.js').Router>} */
 const ROUTERS = {
   valhalla: (userAgent) => new ValhallaRouter({ userAgent }),
   stub: () => new StubRouter(),
+};
+
+/** @type {Record<string, (userAgent: string) => import('../types.js').Geocoder|null>} */
+const GEOCODERS = {
+  nominatim: (userAgent) => new NominatimGeocoder({ userAgent }),
+  none: () => null,
 };
 
 /** OFFLINE values that mean "off"; any other non-empty value turns offline mode on. */
@@ -42,18 +64,20 @@ const OFF_VALUES = new Set(['0', 'false', 'no', 'off']);
 /**
  * Pick the CameraSource and Router named by env (see above).
  * @param {Record<string, string|undefined>} env
- * @returns {{cameraSource: import('../types.js').CameraSource, router: import('../types.js').Router, host: string, port: number}}
+ * @returns {{cameraSource: import('../types.js').CameraSource, router: import('../types.js').Router, geocoder: import('../types.js').Geocoder|null, host: string, port: number}}
  */
 export function configFromEnv(env) {
   const offline = isOn(env.OFFLINE);
   const sourceName = offline ? 'fixture' : pick(env.CAMERA_SOURCE, 'overpass', 'CAMERA_SOURCE', CAMERA_SOURCES);
   const routerName = offline ? 'stub' : pick(env.ROUTER, 'valhalla', 'ROUTER', ROUTERS);
+  const geocoderName = offline ? 'none' : pick(env.GEOCODER, 'nominatim', 'GEOCODER', GEOCODERS);
   const port = parsePort(env.PORT);
   const host = env.HOST?.trim() || DEFAULT_HOST;
   const userAgent = userAgentFor(env.CONTACT);
   return {
-    cameraSource: CAMERA_SOURCES[sourceName](userAgent),
+    cameraSource: CAMERA_SOURCES[sourceName](userAgent, env),
     router: ROUTERS[routerName](userAgent),
+    geocoder: GEOCODERS[geocoderName](userAgent),
     host,
     port,
   };
@@ -76,8 +100,8 @@ export async function main() {
     }
     throw err;
   }
-  const { cameraSource, router, host, port } = config;
-  const server = createServer({ cameraSource, router });
+  const { cameraSource, router, geocoder, host, port } = config;
+  const server = createServer({ cameraSource, router, geocoder });
   try {
     await new Promise((resolve, reject) => {
       server.once('error', reject);
@@ -167,9 +191,31 @@ function urlHost(host) {
   return host.includes(':') && !host.startsWith('[') ? `[${host}]` : host;
 }
 
+/**
+ * Close the server on SIGINT / SIGTERM (Ctrl-C, `docker stop`); a second signal exits at once.
+ * @param {import('node:http').Server} server
+ * @param {() => void} onClose  last chance to save state
+ */
+function closeOnSignals(server, onClose) {
+  let closing = false;
+  const stop = (/** @type {string} */ signal) => {
+    if (closing) process.exit(1);
+    closing = true;
+    console.log(`${signal}: shutting down`);
+    onClose();
+    server.close(() => process.exit(0));
+    server.closeIdleConnections();
+    setTimeout(() => process.exit(0), 5000).unref();
+  };
+  process.on('SIGINT', stop);
+  process.on('SIGTERM', stop);
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+  main()
+    .then((server) => server && closeOnSignals(server, () => FileTileStore.flushAll()))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 }

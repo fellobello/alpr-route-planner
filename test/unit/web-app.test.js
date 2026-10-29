@@ -19,18 +19,20 @@ test('page title and heading are "ALPR Route Planner"', () => {
   assert.match(html, /<h1>ALPR Route Planner<\/h1>/);
 });
 
-test('page loads Leaflet 1.9.4 from unpkg, pinned, with integrity', () => {
-  assert.match(
-    html,
-    /<link rel="stylesheet" href="https:\/\/unpkg\.com\/leaflet@1\.9\.4\/dist\/leaflet\.css"\s+integrity="sha256-p4NxAoJBhIIN\+hmNHrzRCf9tD\/miZyoHS5obTRR9BMY=" crossorigin="">/,
-  );
-  assert.match(
-    html,
-    /<script src="https:\/\/unpkg\.com\/leaflet@1\.9\.4\/dist\/leaflet\.js"\s+integrity="sha256-20nQCchB9co0qIjJZRGuk2\/Z9VM\+kNiyxNV1lvTlZBo=" crossorigin=""><\/script>/,
-  );
+test('page loads its own copy of Leaflet 1.9.4 before app.js', () => {
+  assert.match(html, /<link rel="stylesheet" href="vendor\/leaflet\/leaflet\.css">/);
+  assert.match(html, /<script src="vendor\/leaflet\/leaflet\.js"><\/script>/);
   assert.match(html, /<script type="module" src="app\.js"><\/script>/);
   // Leaflet (classic script) must come before app.js (module, deferred) so window.L exists.
   assert.ok(html.indexOf('leaflet.js') < html.indexOf('app.js'));
+});
+
+test('vendored Leaflet matches the published 1.9.4 files', async () => {
+  const { createHash } = await import('node:crypto');
+  const sri = async (/** @type {string} */ f) =>
+    'sha256-' + createHash('sha256').update(await readFile(new URL(`vendor/leaflet/${f}`, PUBLIC))).digest('base64');
+  assert.equal(await sri('leaflet.js'), 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=');
+  assert.equal(await sri('leaflet.css'), 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=');
 });
 
 test('page says coverage is incomplete, credits OpenStreetMap, and disclaims Flock Safety', () => {
@@ -40,9 +42,10 @@ test('page says coverage is incomplete, credits OpenStreetMap, and disclaims Flo
   assert.match(html, /Not affiliated with Flock Safety\./);
 });
 
-test('page and stylesheet use no images', () => {
-  assert.doesNotMatch(html, /<img\b|<svg\b|\.png|\.jpe?g|\.gif|\.webp/i);
-  assert.doesNotMatch(css, /url\(/i);
+test('page loads nothing from other sites except map tiles', () => {
+  assert.doesNotMatch(html, /<(script|link)\b[^>]*(src|href)="https?:/i);
+  // Icons are inline data: URLs, so the stylesheet makes no requests either.
+  for (const m of css.matchAll(/url\(([^)]*)\)/gi)) assert.match(m[1], /^"data:image\/svg\+xml,/);
 });
 
 // ---- Fakes ----
@@ -60,6 +63,29 @@ class FakeElement {
     this.max = '';
     this.step = '';
     this.className = '';
+    this.placeholder = '';
+    /** @type {Record<string, string>} */
+    this.attributes = {};
+    const el = this;
+    this.classList = {
+      /** @param {string} c */
+      contains: (c) => el.className.split(' ').includes(c),
+      /** @param {string} c */
+      add: (c) => {
+        if (!el.classList.contains(c)) el.className = `${el.className} ${c}`.trim();
+      },
+      /** @param {string} c */
+      remove: (c) => {
+        el.className = el.className.split(' ').filter((x) => x && x !== c).join(' ');
+      },
+      /** @param {string} c @param {boolean} [force] */
+      toggle: (c, force) => {
+        const on = force ?? !el.classList.contains(c);
+        if (on) el.classList.add(c);
+        else el.classList.remove(c);
+        return on;
+      },
+    };
     /** @type {(FakeElement|string)[]} */
     this.children = [];
     /** @type {Record<string, Function[]>} */
@@ -69,9 +95,19 @@ class FakeElement {
   addEventListener(type, fn) {
     (this.listeners[type] ||= []).push(fn);
   }
-  /** @param {string} type */
-  dispatch(type) {
-    for (const fn of this.listeners[type] || []) fn({ type, target: this });
+  /** @param {string} type @param {object} [extra] */
+  dispatch(type, extra = {}) {
+    const event = { type, target: this, defaultPrevented: false, preventDefault: () => (event.defaultPrevented = true), ...extra };
+    for (const fn of this.listeners[type] || []) fn(event);
+    return event;
+  }
+  /** @param {string} name @param {string} value */
+  setAttribute(name, value) {
+    this.attributes[name] = value;
+  }
+  /** @param {string} name */
+  removeAttribute(name) {
+    delete this.attributes[name];
   }
   /** @param {...(FakeElement|string)} nodes */
   append(...nodes) {
@@ -234,6 +270,9 @@ class FakeMap extends Evented {
   getZoom() {
     return this.zoom;
   }
+  getCenter() {
+    return this.center ? { lat: this.center[0], lng: this.center[1] } : null;
+  }
   getBounds() {
     const [lat, lon] = /** @type {[number, number]} */ (this.center);
     const { span } = this;
@@ -279,6 +318,7 @@ function makeLeaflet() {
       return line;
     },
     latLngBounds: (/** @type {any[]} */ pts) => ({ pts, isValid: () => pts.length > 0 }),
+    control: { zoom: (/** @type {any} */ options) => ({ options, addTo: () => undefined }) },
   };
   return { L, maps, polylines };
 }
@@ -407,7 +447,7 @@ test('app starts: config, OSM tiles with attribution, slider limits, offline not
 
   assert.equal(app.el('source-note').hidden, false);
   assert.match(app.el('source-note').textContent, /made-up samples/);
-  assert.equal(app.el('hint').textContent, 'Click the map to set the start.');
+  assert.equal(app.el('hint').textContent, 'Search for a place, or click the map, to set the start.');
   assert.equal(app.el('plan').disabled, true);
   assert.equal(app.el('error').hidden, true);
 });
@@ -461,24 +501,24 @@ test('app shows the API error when cameras fail to load', async () => {
     ...defaultRoutes,
     '/api/cameras': () => ({ status: 502, body: { error: 'overpass: HTTP 504', code: 'UPSTREAM' } }),
   });
-  assert.equal(app.el('camera-status').textContent, 'Could not load cameras: overpass: HTTP 504');
+  assert.equal(app.el('camera-status').textContent, 'Could not load cameras: The OpenStreetMap camera service is busy or down. Try again in a minute.');
 });
 
 test('app click cycle sets start, end, then a new start', async () => {
   const app = await startApp();
   app.map.click(33.74, -84.4);
-  assert.equal(app.el('start-text').textContent, '33.74000, -84.40000');
-  assert.equal(app.el('end-text').textContent, 'not set');
-  assert.equal(app.el('hint').textContent, 'Click the map to set the end.');
+  assert.equal(app.el('start-input').value, '33.74000, -84.40000');
+  assert.equal(app.el('end-input').value, '');
+  assert.equal(app.el('hint').textContent, 'Now set the destination.');
   assert.equal(app.el('plan').disabled, true);
   assert.equal(app.endpointLayer.layers.size, 1);
 
   app.map.click(33.76, -84.37);
-  assert.equal(app.el('end-text').textContent, '33.76000, -84.37000');
+  assert.equal(app.el('end-input').value, '33.76000, -84.37000');
   assert.equal(app.el('plan').disabled, false);
   assert.equal(app.endpointLayer.layers.size, 2);
   const ends = [...app.endpointLayer.layers];
-  assert.deepEqual(ends.map((m) => m.tooltip.text), ['Start', 'End']);
+  assert.deepEqual(ends.map((m) => m.tooltip.text), ['Start', 'Destination']);
   // DOM markers that ignore the mouse: a canvas pane above the cameras would swallow their clicks.
   for (const m of ends) {
     assert.equal(m.kind, 'marker');
@@ -493,8 +533,8 @@ test('app click cycle sets start, end, then a new start', async () => {
   assert.ok(Number(app.map.panes.routes.style.zIndex) < Number(app.map.panes.cameras.style.zIndex));
 
   app.map.click(33.7, -84.3);
-  assert.equal(app.el('start-text').textContent, '33.70000, -84.30000');
-  assert.equal(app.el('end-text').textContent, 'not set');
+  assert.equal(app.el('start-input').value, '33.70000, -84.30000');
+  assert.equal(app.el('end-input').value, '');
   assert.equal(app.el('plan').disabled, true);
 });
 
@@ -502,10 +542,10 @@ test('app click that closes a popup does not move the points', async () => {
   const app = await startApp();
   app.map.fire('popupopen');
   app.map.click(33.74, -84.4);
-  assert.equal(app.el('start-text').textContent, 'not set');
+  assert.equal(app.el('start-input').value, '');
   app.map.fire('popupclose');
   app.map.click(33.74, -84.4);
-  assert.equal(app.el('start-text').textContent, '33.74000, -84.40000');
+  assert.equal(app.el('start-input').value, '33.74000, -84.40000');
 });
 
 test('app plans a route: request body, both lines, highlights and results', async () => {
@@ -553,8 +593,10 @@ test('app plans a route: request body, both lines, highlights and results', asyn
 
   assert.equal(app.el('results').hidden, false);
   const text = app.el('results-body').text;
-  assert.match(text, /Fastest route3\.4 km · 12 min · 2 cameras/);
-  assert.match(text, /Route avoiding cameras4\.1 km · 15 min · No cameras · \+3 min/);
+  // Recommended (avoiding) route first, then the fastest, then the one-line verdict.
+  assert.match(text, /^Route avoiding cameras15 min · 4\.1 kmNo cameras\+3 minFastest route12 min · 3\.4 km2 cameras/);
+  assert.match(text, /Avoids all 2 cameras for 3 min more\./);
+  assert.equal(app.el('results-body').findAll('recommended').length, 1);
   assert.match(text, /No other route was found\./);
   assert.equal(app.el('stale').hidden, true);
 
@@ -584,7 +626,7 @@ test('app shows one result when both routes are the same', async () => {
   await settle();
   const body = app.el('results-body');
   assert.equal(body.findAll('result').length, 1);
-  assert.match(body.text, /It passes no mapped cameras, so there is nothing to avoid\./);
+  assert.match(body.text, /The fastest route passes no mapped cameras\./);
 });
 
 test('app shows the {error} message from a failed plan', async () => {
@@ -637,8 +679,8 @@ test('app clear button resets points and plan', async () => {
   app.el('plan').dispatch('click');
   await settle();
   app.el('clear').dispatch('click');
-  assert.equal(app.el('start-text').textContent, 'not set');
-  assert.equal(app.el('end-text').textContent, 'not set');
+  assert.equal(app.el('start-input').value, '');
+  assert.equal(app.el('end-input').value, '');
   assert.equal(app.endpointLayer.layers.size, 0);
   assert.equal(app.routeLayer.layers.size, 0);
   assert.equal(app.el('results').hidden, true);
@@ -653,7 +695,90 @@ test('app still opens the map when the server is unreachable', async () => {
   assert.equal(app.el('error').hidden, false);
   assert.equal(
     app.el('error').textContent,
-    'Could not load settings from the server: Could not reach the server. Is it running?',
+    'Could not load settings from the server: Could not reach the server. Check your connection.',
   );
-  assert.equal(app.el('camera-status').textContent, 'Could not load cameras: Could not reach the server. Is it running?');
+  assert.equal(app.el('camera-status').textContent, 'Could not load cameras: Could not reach the server. Check your connection.');
+});
+
+// ---- Search, swap, location ----
+
+const PLACES = [
+  { name: 'Mission Plaza', detail: 'San Luis Obispo, California', lat: 35.2799, lon: -120.6641 },
+  { name: 'Mission Plaza', detail: 'Somewhere else', lat: 34.1, lon: -118.2 },
+];
+
+test('app search shows the places and picking one sets that end', async () => {
+  const app = await startApp({
+    ...defaultRoutes,
+    '/api/geocode': () => ({ status: 200, body: { results: PLACES } }),
+  });
+  app.el('end-input').value = 'mission plaza';
+  const submit = app.el('end-form').dispatch('submit');
+  assert.equal(submit.defaultPrevented, true);
+  await settle();
+  const call = app.net.calls.find((c) => c.url.startsWith('/api/geocode'));
+  assert.match(call.url, /^\/api\/geocode\?q=mission%20plaza&near=33\.7490,-84\.3880$/);
+  const list = app.el('end-results');
+  assert.equal(list.hidden, false);
+  assert.equal(list.children.length, 2);
+
+  const button = /** @type {any} */ (list.children[0]).children[0];
+  button.dispatch('click');
+  assert.equal(list.hidden, true);
+  assert.equal(app.el('end-input').value, 'Mission Plaza');
+  assert.equal(app.el('end-text').textContent, '35.27990, -120.66410');
+  assert.deepEqual(app.map.center, [35.2799, -120.6641]);
+  assert.equal(app.el('hint').textContent, 'Search for a place, or click the map, to set the start.');
+});
+
+test('app search with one result picks it, and says so when there are none', async () => {
+  let results = [PLACES[0]];
+  const app = await startApp({
+    ...defaultRoutes,
+    '/api/config': () => ({ status: 200, body: { ...CONFIG, geocoder: 'nominatim' } }),
+    '/api/geocode': () => ({ status: 200, body: { results } }),
+  });
+  app.el('start-input').value = 'mission plaza';
+  app.el('start-form').dispatch('submit');
+  await settle();
+  assert.equal(app.el('start-results').hidden, true);
+  assert.equal(app.el('start-input').value, 'Mission Plaza');
+
+  results = [];
+  app.el('end-input').value = 'nowhere at all';
+  app.el('end-form').dispatch('submit');
+  await settle();
+  assert.equal(app.el('end-results').hidden, false);
+  assert.match(app.el('end-results').text, /No places found/);
+});
+
+test('app shows a failed search as an error', async () => {
+  const app = await startApp({
+    ...defaultRoutes,
+    '/api/geocode': () => ({ status: 502, body: { error: 'nominatim: HTTP 503', code: 'UPSTREAM' } }),
+  });
+  app.el('start-input').value = 'x';
+  app.el('start-form').dispatch('submit');
+  await settle();
+  assert.equal(app.el('error').textContent, 'Search failed: Place search is busy or down. Try again, or click the map.');
+});
+
+test('app swap trades start and destination and drops the plan', async () => {
+  const app = await startApp();
+  app.map.click(33.74, -84.4);
+  app.map.click(33.76, -84.37);
+  app.el('plan').dispatch('click');
+  await settle();
+  assert.equal(app.el('results').hidden, false);
+  app.el('swap').dispatch('click');
+  assert.equal(app.el('start-input').value, '33.76000, -84.37000');
+  assert.equal(app.el('end-input').value, '33.74000, -84.40000');
+  assert.equal(app.el('results').hidden, true);
+  assert.equal(app.el('plan').disabled, false);
+});
+
+test('app hides the location buttons when the device has no geolocation', async () => {
+  const app = await startApp();
+  assert.equal(app.el('start-locate').hidden, true);
+  assert.equal(app.el('locate').hidden, true);
 });

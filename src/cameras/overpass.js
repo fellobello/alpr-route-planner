@@ -15,13 +15,31 @@ import { assertBbox, cleanString, isFiniteNumber, selectInBbox } from './common.
 
 export const OVERPASS_ENDPOINT = 'https://overpass-api.de/api/interpreter';
 
+/**
+ * The main instance and public mirrors, tried in order when one fails or times out.
+ * The server and the Android app pass these; the class default is the main instance alone.
+ */
+export const OVERPASS_ENDPOINTS = Object.freeze([
+  OVERPASS_ENDPOINT,
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+  'https://overpass.private.coffee/api/interpreter',
+]);
+
+/** Cached tiles older than the TTL are still served when Overpass is down, up to this age. */
+export const STALE_MAX_MS = 30 * 24 * 60 * 60 * 1000;
+
+/** When a refresh of stale tiles takes longer than this, answer with the stale data meanwhile. */
+export const STALE_WAIT_MS = 4000;
+
 /** Cache tile size in degrees. Bboxes are split on this grid (aligned to multiples of it). */
 export const TILE_DEG = 0.1;
 
 /** Server-side query timeout, seconds (the `[timeout:N]` setting). */
 const QUERY_TIMEOUT_S = 25;
 /** Client-side limit for one HTTP request, a bit longer than the server-side timeout. */
-const REQUEST_TIMEOUT_MS = 40_000;
+const REQUEST_TIMEOUT_MS = 30_000;
+/** No further mirror is tried once this much time has gone by, so a request never waits minutes. */
+const TOTAL_TIMEOUT_MS = 45_000;
 /**
  * Largest bbox width or height getCameras accepts, in degrees. The API caps map requests at
  * MAX_BBOX_SPAN_DEG; this only guards against runaway planner corridors (3 degrees ~ 330 km).
@@ -185,7 +203,19 @@ function tileBbox(row, col) {
  * @property {Promise<Camera[]>} cameras  resolves to the tile's cameras
  * @property {boolean} pending            true while the request is in flight
  * @property {number} fetchedAt           clock reading when the request started
+ * @property {Camera[]|null} last         the last data that arrived for the tile, kept for refreshes that fail
+ * @property {number} lastAt              when `last` was fetched
  */
+
+/**
+ * Somewhere to keep tiles between runs (a file for the server, localStorage on Android).
+ * load runs once, in the constructor; save gets every tile with data after each fetch.
+ * @typedef {Object} TileStore
+ * @property {() => StoredTile[]} load
+ * @property {(tiles: StoredTile[]) => void} save
+ */
+
+/** @typedef {{key: string, fetchedAt: number, cameras: Camera[]}} StoredTile */
 
 /** @implements {CameraSource} */
 export class OverpassCameraSource {
@@ -196,16 +226,60 @@ export class OverpassCameraSource {
    * @param {number} [opts.ttlMs=CAMERA_CACHE_TTL_MS]
    * @param {string} [opts.userAgent=USER_AGENT]
    * @param {() => number} [opts.now=Date.now]           injected clock for cache tests
+   * @param {readonly string[]} [opts.endpoints]         tried in order; defaults to [endpoint]
+   * @param {TileStore|null} [opts.store]                 keeps tiles across restarts
+   * @param {number} [opts.staleWaitMs=STALE_WAIT_MS]
    */
   constructor(opts = {}) {
     this.name = 'overpass';
     this.endpoint = opts.endpoint ?? OVERPASS_ENDPOINT;
+    this.endpoints = opts.endpoints?.length ? [...opts.endpoints] : [this.endpoint];
+    this.store = opts.store ?? null;
+    this.staleWaitMs = opts.staleWaitMs ?? STALE_WAIT_MS;
     this.fetch = opts.fetch ?? globalThis.fetch;
     this.ttlMs = opts.ttlMs ?? CAMERA_CACHE_TTL_MS;
     this.userAgent = opts.userAgent ?? USER_AGENT;
     this.now = opts.now ?? Date.now;
     /** @type {Map<string, CacheEntry>} tile key -> entry */
     this._tiles = new Map();
+    this._loadStore();
+  }
+
+  _loadStore() {
+    if (!this.store) return;
+    let stored;
+    try {
+      stored = this.store.load();
+    } catch (err) {
+      console.warn(`[overpass] could not read the tile cache: ${err instanceof Error ? err.message : err}`);
+      return;
+    }
+    const now = this.now();
+    for (const t of Array.isArray(stored) ? stored : []) {
+      if (!t || typeof t.key !== 'string' || !Array.isArray(t.cameras) || !Number.isFinite(t.fetchedAt)) continue;
+      if (now - t.fetchedAt >= STALE_MAX_MS) continue;
+      this._tiles.set(t.key, {
+        cameras: Promise.resolve(t.cameras),
+        pending: false,
+        fetchedAt: t.fetchedAt,
+        last: t.cameras,
+        lastAt: t.fetchedAt,
+      });
+    }
+  }
+
+  _saveStore() {
+    if (!this.store) return;
+    /** @type {StoredTile[]} */
+    const tiles = [];
+    for (const [key, e] of this._tiles) {
+      if (e.last) tiles.push({ key, fetchedAt: e.lastAt, cameras: e.last });
+    }
+    try {
+      this.store.save(tiles);
+    } catch (err) {
+      console.warn(`[overpass] could not write the tile cache: ${err instanceof Error ? err.message : err}`);
+    }
   }
 
   /**
@@ -240,10 +314,26 @@ export class OverpassCameraSource {
     const missing = tiles.filter((t) => !this._isFresh(this._tiles.get(t.key), now));
     if (missing.length > 0) this._startFetch(missing, now);
     // Every tile has an entry now (fresh, in flight, or just started); read them synchronously.
-    const perTile = await Promise.all(
-      tiles.map((t) => /** @type {CacheEntry} */ (this._tiles.get(t.key)).cameras),
-    );
+    const perTile = await Promise.all(tiles.map((t) => this._read(/** @type {CacheEntry} */ (this._tiles.get(t.key)))));
     return selectInBbox(perTile.flat(), bbox);
+  }
+
+  /**
+   * A tile's cameras. While a refresh is in flight for a tile that has older data, the older
+   * data is used if the refresh fails or takes longer than staleWaitMs.
+   * @param {CacheEntry} entry
+   * @returns {Promise<Camera[]>}
+   */
+  _read(entry) {
+    const last = entry.last;
+    if (!entry.pending || !last) return entry.cameras;
+    /** @type {ReturnType<typeof setTimeout>|undefined} */
+    let timer;
+    const slow = new Promise((resolve) => {
+      timer = setTimeout(() => resolve(last), this.staleWaitMs);
+    });
+    const fresh = entry.cameras.catch(() => last);
+    return Promise.race([fresh, slow]).finally(() => clearTimeout(timer));
   }
 
   /**
@@ -266,34 +356,48 @@ export class OverpassCameraSource {
     /** @type {Map<string, CacheEntry>} */
     const created = new Map();
     for (const tile of tiles) {
+      const prev = this._tiles.get(tile.key);
       /** @type {CacheEntry} */
       const entry = {
         cameras: batch.then((byTile) => byTile.get(tile.key) ?? []),
         pending: true,
         fetchedAt: now,
+        last: prev?.last ?? null,
+        lastAt: prev?.lastAt ?? 0,
       };
       this._tiles.set(tile.key, entry);
       created.set(tile.key, entry);
     }
     batch.then(
-      () => {
-        for (const entry of created.values()) entry.pending = false;
+      (byTile) => {
+        for (const [key, entry] of created) {
+          entry.pending = false;
+          entry.last = byTile.get(key) ?? [];
+          entry.lastAt = now;
+        }
+        this._saveStore();
       },
       () => {
         for (const [key, entry] of created) {
-          if (this._tiles.get(key) === entry) this._tiles.delete(key);
+          if (this._tiles.get(key) !== entry) continue;
+          if (entry.last) {
+            // Keep the older data, still marked expired, so the next call tries again.
+            this._tiles.set(key, { ...entry, cameras: Promise.resolve(entry.last), pending: false, fetchedAt: entry.lastAt });
+          } else {
+            this._tiles.delete(key);
+          }
         }
       },
     );
   }
 
   /**
-   * Drop finished entries older than the TTL so the cache doesn't grow without bound.
+   * Drop finished entries too old even to serve as stale data, so the cache doesn't grow without bound.
    * @param {number} now
    */
   _evictExpired(now) {
     for (const [key, entry] of this._tiles) {
-      if (!entry.pending && now - entry.fetchedAt >= this.ttlMs) this._tiles.delete(key);
+      if (!entry.pending && now - entry.fetchedAt >= Math.max(this.ttlMs, STALE_MAX_MS)) this._tiles.delete(key);
     }
   }
 
@@ -332,12 +436,33 @@ export class OverpassCameraSource {
    * @returns {Promise<Camera[]>}
    */
   async _query(query) {
+    /** @type {unknown} */
+    let lastErr;
+    const started = performance.now();
+    for (const endpoint of this.endpoints) {
+      if (lastErr && performance.now() - started > TOTAL_TIMEOUT_MS) break;
+      try {
+        return await this._queryOne(endpoint, query);
+      } catch (err) {
+        lastErr = err;
+        if (this.endpoints.length > 1) console.warn(`[overpass] ${endpoint}: ${err instanceof Error ? err.message : err}`);
+      }
+    }
+    throw lastErr;
+  }
+
+  /**
+   * @param {string} endpoint
+   * @param {string} query
+   * @returns {Promise<Camera[]>}
+   */
+  async _queryOne(endpoint, query) {
     const doFetch = this.fetch;
     if (typeof doFetch !== 'function') throw new UpstreamError('overpass', 'no fetch function available');
     /** @type {Response} */
     let res;
     try {
-      res = await doFetch(this.endpoint, {
+      res = await doFetch(endpoint, {
         method: 'POST',
         headers: {
           'User-Agent': this.userAgent,
