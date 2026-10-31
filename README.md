@@ -63,8 +63,6 @@ app's starter data.
 
     npm test
 
-Tests never touch the network: outside services are faked through injected `fetch`.
-
 ## Layout
 
     src/api.js              the API's behavior, shared by the server and the Android app
