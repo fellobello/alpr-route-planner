@@ -265,6 +265,10 @@ button:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
 .secondary { border: 1px solid var(--border); background: var(--surface); color: var(--text); }
 .secondary:hover { border-color: var(--muted); }
 
+.examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.examples .secondary { padding: 6px 10px; font-size: 13px; }
+.banner a { color: inherit; }
+
 .icon-button {
   flex: none;
   width: 38px;
@@ -407,6 +411,7 @@ footer a { color: inherit; }
   box-shadow: var(--shadow);
 }
 .map-button:hover { color: var(--primary); }
+.map-button[hidden] { display: none; }
 .map-button.busy .icon { animation: pulse 1s ease-in-out infinite; }
 
 /* Leaflet controls in the app's style. */

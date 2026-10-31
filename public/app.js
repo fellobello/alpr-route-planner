@@ -84,6 +84,7 @@ const ui = {
   stale: $('stale'),
   cameraStatus: $('camera-status'),
   sourceNote: $('source-note'),
+  examples: $('examples'),
   version: $('version'),
 };
 
@@ -761,16 +762,45 @@ async function init() {
   const notes = [];
   if (config.cameraSource === 'fixture') notes.push('Offline demo: the cameras are made-up samples in San Luis Obispo.');
   if (config.router === 'stub') notes.push('Routes are straight-line placeholders, not real roads.');
+  // Set by the portfolio demo build (demo/transport.js): one area, no device location.
+  const demo = config.demo;
+  if (demo?.note) notes.push(demo.note);
   ui.sourceNote.textContent = notes.join(' ');
+  if (demo?.backLink) {
+    const a = document.createElement('a');
+    a.href = demo.backLink.href;
+    a.textContent = demo.backLink.text;
+    ui.sourceNote.append(' ', a);
+  }
   ui.sourceNote.hidden = notes.length === 0;
+  for (const ex of demo?.examples ?? []) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'secondary';
+    button.textContent = ex.name;
+    button.addEventListener('click', () => {
+      setPoint('start', ex.start, ex.start.name);
+      setPoint('end', ex.end, ex.end.name);
+      planRoute();
+    });
+    ui.examples.append(button);
+  }
+  ui.examples.hidden = !demo?.examples?.length;
   ui.version.textContent = config.version ? `Version ${config.version}.` : '';
 
   if (config.geocoder === 'coordinates') {
     ui.startInput.placeholder = 'Start: "lat, lon" or use the map';
     ui.endInput.placeholder = 'Destination: "lat, lon" or use the map';
   }
-  ui.startLocate.hidden = !geo;
-  ui.locate.hidden = !geo;
+  ui.startLocate.hidden = !geo || !!demo;
+  ui.locate.hidden = !geo || !!demo;
+  if (demo?.bounds) {
+    const b = demo.bounds;
+    const area = L.latLngBounds([b.south, b.west], [b.north, b.east]);
+    map.setMaxBounds(area.pad(0.1));
+    map.setMinZoom(map.getBoundsZoom(area) - 1);
+    L.rectangle(area, { color: '#64748b', weight: 1, dashArray: '6 6', fill: false, interactive: false }).addTo(map);
+  }
 
   const v = saved.view;
   const view = v && [v.lat, v.lon, v.zoom].every(Number.isFinite) ? v : { ...config.center, zoom: config.zoom };

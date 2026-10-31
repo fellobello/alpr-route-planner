@@ -11,7 +11,9 @@
     "start": "node src/server/main.js",
     "offline": "OFFLINE=1 node src/server/main.js",
     "test": "node --test \"test/**/*.test.js\"",
-    "android": "npm --prefix mobile run apk"
+    "android": "npm --prefix mobile run apk",
+    "demo": "node demo/build.js",
+    "demo:snapshot": "node demo/snapshot.js"
   },
   "license": "UNLICENSED"
 }
